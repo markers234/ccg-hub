@@ -93,10 +93,10 @@ ul.optlist li button{background:none;border:none;color:var(--muted);cursor:point
       <p class="heroSub" id="homeText">The group hub. Spin the wheel, vote in a poll, chat, or roll some dice.</p>
     </div>
     <div class="cardGrid">
-      <button class="featCard" data-goto="wheel"><span class="featIcon">🎡</span><span>Wheel</span></button>
-      <button class="featCard" data-goto="chat"><span class="featIcon">💬</span><span>Chat</span></button>
-      <button class="featCard" data-goto="polls"><span class="featIcon">📊</span><span>Polls</span></button>
-      <button class="featCard" data-goto="dice"><span class="featIcon">🎲</span><span>Dice</span></button>
+      <button class="featCard" data-goto="wheel"><span>Wheel</span></button>
+      <button class="featCard" data-goto="chat"><span>Chat</span></button>
+      <button class="featCard" data-goto="polls"><span>Polls</span></button>
+      <button class="featCard" data-goto="dice"><span>Dice</span></button>
     </div>
     <p class="muted" style="text-align:center;margin-top:22px;">Wheel, Chat and Polls are shared with everyone who opens this page.</p>
   </section>
@@ -213,46 +213,79 @@ ul.optlist li button{background:none;border:none;color:var(--muted);cursor:point
 
 </main>
 
-<script>
+<script type="module">
+// ---------- Firebase setup ----------
+// Paste your project's config from Firebase Console → Project settings →
+// General → Your apps → Web app. See README.md for the full walkthrough.
+const firebaseConfig = {
+  apiKey: "",
+  authDomain: "",
+  projectId: "",
+  storageBucket: "",
+  messagingSenderId: "",
+  appId: ""
+};
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+import {
+  getFirestore, doc, setDoc, onSnapshot, collection, query, orderBy, limit
+} from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+import {
+  getAuth, signInAnonymously, onAuthStateChanged, GoogleAuthProvider, signInWithPopup
+} from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+
+const fbApp = initializeApp(firebaseConfig);
+const fs = getFirestore(fbApp);
+const auth = getAuth(fbApp);
+
+// Thin shim so the rest of this file can keep using db.doc(...).set(...) /
+// db.collection(...).orderBy(...).onSnapshot(...) unchanged.
+function makeDb(){
+  function wrapDoc(path){
+    const ref = doc(fs, path);
+    return {
+      id: ref.id,
+      async set(data){ await setDoc(ref, data); },
+      onSnapshot(next, err){
+        return onSnapshot(ref, snap=>next({ exists:snap.exists(), data:()=>snap.data(), id:snap.id }), err);
+      }
+    };
+  }
+  function wrapCollection(path, constraints){
+    constraints = constraints || [];
+    return {
+      doc(id){ return wrapDoc(path + '/' + (id || doc(collection(fs,path)).id)); },
+      orderBy(field,dir){ return wrapCollection(path, constraints.concat([orderBy(field, dir||'asc')])); },
+      limit(n){ return wrapCollection(path, constraints.concat([limit(n)])); },
+      onSnapshot(next, err){
+        const q = query(collection(fs,path), ...constraints);
+        return onSnapshot(q, snap=>next({ docs: snap.docs.map(d=>({ id:d.id, data:()=>d.data() })) }), err);
+      }
+    };
+  }
+  return { doc:wrapDoc, collection:(p)=>wrapCollection(p) };
+}
 document.getElementById('policyDate').textContent = new Date().toLocaleDateString();
 
 // ---------- Google Sign-In (foundation — see README once self-hosted) ----------
-// 1. Create an OAuth Client ID at https://console.cloud.google.com/apis/credentials
-//    (type: Web application) and add your live domain under Authorized JavaScript origins.
-// 2. Paste that Client ID below. Leave blank to keep the manual name field only.
-const CONFIG = { GOOGLE_CLIENT_ID: "" };
-
+// ---------- Google Sign-In (Firebase Auth) ----------
 function initGoogleButton(){
   const btn=document.getElementById('googleBtn');
   const note=document.getElementById('googleNote');
-  if(!CONFIG.GOOGLE_CLIENT_ID){
-    btn.addEventListener('click',()=>{
+  btn.addEventListener('click', async ()=>{
+    try{
+      const result = await signInWithPopup(auth, new GoogleAuthProvider());
+      const name = result.user.displayName || result.user.email || 'Google User';
+      username=name;
+      localStorage.setItem('ccg_username',name);
+      if(db){ try{ db.doc('users/'+deviceId).set({username:name, provider:'google', updated:Date.now()}); }catch(e){} }
+      refreshAccountUI();
+    }catch(e){
       note.style.display='block';
-      note.textContent='Google Sign-In isn\'t configured yet — add a Client ID once this site is on its own domain (see README).';
-    });
-    return;
-  }
-  const s=document.createElement('script');
-  s.src='https://accounts.google.com/gsi/client';
-  s.async=true;
-  s.onload=()=>{
-    google.accounts.id.initialize({ client_id: CONFIG.GOOGLE_CLIENT_ID, callback: handleGoogleCredential });
-  };
-  s.onerror=()=>{ note.style.display='block'; note.textContent='Could not load Google Sign-In (this preview may block it — it will work on your live domain).'; };
-  document.head.appendChild(s);
-  btn.addEventListener('click',()=>{ if(window.google) google.accounts.id.prompt(); });
+      note.textContent='Google sign-in failed or was cancelled: '+(e && e.code ? e.code : 'unknown error');
+    }
+  });
 }
-function handleGoogleCredential(response){
-  try{
-    const payload=JSON.parse(atob(response.credential.split('.')[1]));
-    const name=payload.name || payload.email || 'Google User';
-    username=name;
-    localStorage.setItem('ccg_username',name);
-    if(db){ try{ db.doc('users/'+deviceId).set({username:name, provider:'google', updated:Date.now()}); }catch(e){} }
-    refreshAccountUI();
-  }catch(e){}
-}
-initGoogleButton();
 
 // ---------- panel switching with animation ----------
 function showPanel(id){
@@ -307,16 +340,9 @@ document.getElementById('themeBtn').onclick=()=>{
   setTimeout(()=>overlay.classList.remove('active'),640);
 };
 
-// ---------- identity (device-based, no passwords) ----------
-function getDeviceId(){
-  let id = localStorage.getItem('ccg_device_id');
-  if(!id){
-    id = 'd_' + Date.now().toString(36) + Math.random().toString(36).slice(2,10);
-    localStorage.setItem('ccg_device_id', id);
-  }
-  return id;
-}
-const deviceId = getDeviceId();
+// ---------- identity (Firebase anonymous auth gives every visitor a stable id, no password) ----------
+let deviceId = localStorage.getItem('ccg_device_id') || ('d_' + Date.now().toString(36) + Math.random().toString(36).slice(2,10));
+localStorage.setItem('ccg_device_id', deviceId);
 let username = localStorage.getItem('ccg_username') || '';
 
 function refreshAccountUI(){
@@ -350,15 +376,25 @@ document.getElementById('acctLogout').onclick=()=>{
   username=''; localStorage.removeItem('ccg_username'); refreshAccountUI();
 };
 refreshAccountUI();
+initGoogleButton();
 
-// ---------- db capability ----------
+// ---------- Firebase backend bootstrap ----------
 let db=null;
-(async()=>{
-  try{ db = await window.claude?.use?.('db'); }catch(e){ db=null; }
-  initWheel();
-  initChat();
-  initPolls();
-})();
+if(!firebaseConfig.apiKey){
+  console.warn('Firebase is not configured yet — Wheel/Chat/Polls will show as unavailable. See README.md.');
+  initWheel(); initChat(); initPolls();
+} else {
+  onAuthStateChanged(auth, user=>{
+    if(!user){ signInAnonymously(auth).catch(e=>console.error('Anonymous sign-in failed', e)); return; }
+    deviceId = user.uid; // real per-visitor id once signed in (anonymous or Google)
+    if(!db){
+      db = makeDb();
+      initWheel();
+      initChat();
+      initPolls();
+    }
+  });
+}
 
 // ================= WHEEL =================
 let wheelOptions=["Pizza","Tacos","Sushi","Stay In"];
