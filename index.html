@@ -3,102 +3,202 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>CCG Hub</title>
+<title>Hub</title>
 <style>
 :root{
-  --bg:#fff; --fg:#111; --line:#111; --muted:#666; --card:#f5f5f5; --pos:#111;
+  --bg:#160f0a; --bg2:#0e0a06; --fg:#f1e3cf; --line:#4a3623; --muted:#b89a72;
+  --card:#211609; --card2:#2a1c0e; --pos:#e08a3c; --pos-fg:#1c1006; --ember:#c1461e;
+  --glow: 0 0 24px rgba(224,138,60,.12);
   box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
 }
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme]),:root[data-theme="ccg"]{ --bg:#0b0b0b; --fg:#eee; --line:#eee; --muted:#999; --card:#1a1a1a; --pos:#eee; }
-}
-:root[data-theme="smudge"]{ --bg:#1b1032; --fg:#f0e6ff; --line:#c9a6ff; --muted:#a48fc9; --card:#2a1a4a; --pos:#ff6fb0; }
 *{box-sizing:border-box;}
 html,body{height:100%;}
-body{margin:0;background:var(--bg);color:var(--fg);font-family:"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;transition:background .3s ease,color .3s ease;}
-header{position:sticky;top:0;top:env(safe-area-inset-top,0px);background:var(--bg);border-bottom:2px solid var(--line);padding:14px 20px;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:10px;}
-h1{margin:0;font-size:1.25rem;letter-spacing:2px;text-transform:uppercase;font-weight:800;}
-#themeBtn{background:none;border:1px solid var(--line);color:var(--fg);padding:8px 12px;font-size:.75rem;text-transform:uppercase;letter-spacing:1px;cursor:pointer;font-weight:700;white-space:nowrap;}
-nav{display:flex;gap:0;border-bottom:2px solid var(--line);overflow-x:auto;background:var(--bg);position:sticky;top:52px;z-index:9;}
-nav button{flex:1;min-width:76px;padding:11px 6px;background:none;border:none;border-right:1px solid var(--line);color:var(--fg);font-size:.78rem;text-transform:uppercase;letter-spacing:1px;cursor:pointer;font-weight:600;}
-nav button:last-child{border-right:none;}
-nav button.navactive{background:var(--fg);color:var(--bg);}
-main{max-width:640px;margin:0 auto;padding:24px 20px 60px;position:relative;}
+body{
+  margin:0;color:var(--fg);
+  font-family:"Iowan Old Style","Palatino Linotype",Georgia,"Helvetica Neue",serif;
+  -webkit-font-smoothing:antialiased;
+  background:
+    radial-gradient(ellipse 900px 500px at 50% -10%, rgba(224,138,60,.10), transparent 60%),
+    radial-gradient(ellipse 600px 400px at 85% 15%, rgba(193,70,30,.08), transparent 55%),
+    var(--bg);
+  background-attachment:fixed;
+}
+header{position:sticky;top:0;top:env(safe-area-inset-top,0px);background:linear-gradient(var(--bg2),var(--bg));border-bottom:1px solid var(--line);padding:16px 20px;z-index:20;}
+h1{margin:0;font-size:1.35rem;letter-spacing:1px;font-weight:700;color:var(--fg);}
+.siteSubtitle{margin:3px 0 0;font-size:.8rem;color:var(--muted);font-style:italic;letter-spacing:.2px;}
+nav{display:flex;gap:6px;border-bottom:1px solid var(--line);overflow-x:auto;background:var(--bg);position:sticky;top:60px;z-index:19;padding:8px 12px;}
+nav button{flex:1;min-width:76px;padding:9px 8px;background:none;border:1px solid transparent;border-radius:9px;color:var(--muted);font-size:.78rem;letter-spacing:.4px;cursor:pointer;font-weight:600;position:relative;font-family:inherit;transition:background .15s ease,color .15s ease,border-color .15s ease;}
+nav button:hover{border-color:var(--line);color:var(--fg);}
+nav button.navactive{background:var(--pos);color:var(--pos-fg);border-color:var(--pos);box-shadow:var(--glow);}
+.dropdownMenu{position:fixed;background:var(--card2);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:none;z-index:50;box-shadow:0 12px 30px rgba(0,0,0,.55), var(--glow);}
+.dropdownMenu.open{display:block;}
+.dropdownMenu button{display:block;width:100%;padding:12px 16px;background:none;border:none;border-bottom:1px solid var(--line);color:var(--fg);text-align:left;letter-spacing:.3px;font-size:.9rem;cursor:pointer;font-family:inherit;}
+.dropdownMenu button:last-child{border-bottom:none;}
+.dropdownMenu button:hover{background:var(--pos);color:var(--pos-fg);}
+main{max-width:640px;margin:0 auto;padding:26px 20px 60px;position:relative;}
 .panel{display:none;opacity:0;transform:translateY(10px);transition:opacity .3s ease,transform .3s ease;}
 .panel.active{display:block;}
 .panel.show{opacity:1;transform:translateY(0);}
-h2{text-transform:uppercase;letter-spacing:1px;font-size:1.1rem;border-bottom:1px solid var(--line);padding-bottom:8px;}
-input[type=text]{width:100%;padding:10px 12px;background:var(--card);border:1px solid var(--line);color:var(--fg);font-size:1rem;border-radius:0;}
-button.btn{padding:10px 16px;background:var(--pos);color:var(--bg);border:1px solid var(--line);font-weight:700;text-transform:uppercase;letter-spacing:1px;cursor:pointer;font-size:.85rem;}
-button.btn.outline{background:none;color:var(--fg);}
+h2{font-size:1.2rem;font-weight:700;border-bottom:1px solid var(--line);padding-bottom:10px;color:var(--fg);letter-spacing:.2px;}
+input[type=text]{width:100%;padding:11px 13px;background:var(--card);border:1px solid var(--line);color:var(--fg);font-size:1rem;border-radius:9px;font-family:inherit;}
+input[type=text]:focus{outline:none;border-color:var(--pos);box-shadow:0 0 0 3px rgba(224,138,60,.18);}
+input[type=text]::placeholder{color:var(--muted);}
+button.btn{padding:11px 18px;background:var(--pos);color:var(--pos-fg);border:1px solid var(--pos);border-radius:9px;font-weight:700;letter-spacing:.3px;cursor:pointer;font-size:.88rem;font-family:inherit;box-shadow:var(--glow);transition:transform .12s ease,box-shadow .12s ease;}
+button.btn:hover{transform:translateY(-1px);box-shadow:0 0 30px rgba(224,138,60,.25);}
+button.btn.outline{background:none;color:var(--fg);box-shadow:none;border-color:var(--line);}
+button.btn.outline:hover{border-color:var(--pos);color:var(--pos);}
+button.btn.danger{background:none;color:var(--ember);border-color:var(--ember);box-shadow:none;}
 .row{display:flex;gap:8px;margin:12px 0;}
 .row input{flex:1;}
 ul.optlist{list-style:none;padding:0;margin:12px 0;}
-ul.optlist li{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border:1px solid var(--line);margin-bottom:6px;}
+ul.optlist li{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;border:1px solid var(--line);border-radius:9px;margin-bottom:6px;background:var(--card);}
 ul.optlist li button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem;}
 #wheelWrap{display:flex;justify-content:center;margin:24px 0;}
-#wheelSvg{max-width:280px;width:100%;height:auto;transform-origin:50% 50%;transition:transform 4s cubic-bezier(.17,.67,.12,.99);}
-#result{text-align:center;font-size:1.3rem;font-weight:800;margin-top:14px;min-height:1.6em;text-transform:uppercase;}
-#chatLog{border:1px solid var(--line);height:320px;overflow-y:auto;padding:10px;margin-bottom:10px;background:var(--card);}
-.msg{margin-bottom:8px;font-size:.92rem;}
-.msg b{text-transform:uppercase;letter-spacing:.5px;color:var(--pos);}
+#wheelSvg{max-width:280px;width:100%;height:auto;transform-origin:50% 50%;transition:transform 4s cubic-bezier(.17,.67,.12,.99);filter:drop-shadow(0 0 18px rgba(224,138,60,.18));}
+#result{text-align:center;font-size:1.3rem;font-weight:700;margin-top:14px;min-height:1.6em;color:var(--pos);}
+.msg{margin-bottom:10px;font-size:.92rem;}
+.msg b{letter-spacing:.3px;color:var(--pos);font-weight:700;}
 .msg .t{color:var(--muted);font-size:.7rem;margin-left:6px;}
-#diceResult{font-size:3rem;text-align:center;font-weight:800;margin:20px 0;}
+.chatLog{border:1px solid var(--line);border-radius:12px;height:320px;overflow-y:auto;padding:14px;margin-bottom:10px;background:var(--card);}
 .muted{color:var(--muted);font-size:.85rem;}
 .hidden{display:none;}
-.pollCard{border:1px solid var(--line);padding:12px;margin-bottom:14px;background:var(--card);}
+.pollCard{border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:14px;background:var(--card);}
 .pollQ{font-weight:700;margin-bottom:8px;}
 .pollOpt{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
-.pollOpt button{flex:1;text-align:left;background:none;border:1px solid var(--line);color:var(--fg);padding:8px;cursor:pointer;}
-.barWrap{flex:1;background:var(--bg);border:1px solid var(--line);height:26px;position:relative;overflow:hidden;}
-.barFill{height:100%;background:var(--pos);transition:width .5s ease;}
-.barLabel{position:absolute;left:6px;top:3px;font-size:.75rem;color:var(--fg);mix-blend-mode:difference;}
+.pollOpt button{flex:1;text-align:left;background:none;border:1px solid var(--line);border-radius:8px;color:var(--fg);padding:9px;cursor:pointer;font-family:inherit;}
+.pollOpt button:hover{border-color:var(--pos);color:var(--pos);}
+.barWrap{flex:1;background:var(--bg2);border:1px solid var(--line);border-radius:8px;height:28px;position:relative;overflow:hidden;}
+.barFill{height:100%;background:linear-gradient(90deg,var(--ember),var(--pos));transition:width .5s ease;}
+.barLabel{position:absolute;left:8px;top:4px;font-size:.75rem;color:var(--fg);mix-blend-mode:difference;}
 .pollMeta{font-size:.7rem;color:var(--muted);margin-top:4px;}
-#themeOverlay{position:fixed;inset:0;background:var(--pos);opacity:0;pointer-events:none;transition:opacity .35s ease;z-index:999;}
-#themeOverlay.active{opacity:1;}
-.legal p,.legal li{color:var(--fg);font-size:.92rem;line-height:1.5;}
-.legal h3{font-size:.95rem;text-transform:uppercase;letter-spacing:1px;margin-top:20px;}
-.accCard{border:1px solid var(--line);padding:14px;background:var(--card);}
-.hero{text-align:center;padding:20px 6px 6px;}
-.heroTag{display:inline-block;border:1px solid var(--line);padding:3px 10px;font-size:.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
-.heroTitle{font-size:2.1rem;font-weight:800;letter-spacing:1px;margin:0 0 10px;text-transform:uppercase;}
-.heroSub{color:var(--muted);font-size:.95rem;max-width:420px;margin:0 auto;}
-.cardGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:26px;}
-.featCard{border:1px solid var(--line);background:var(--card);padding:22px 10px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;color:var(--fg);font-weight:700;text-transform:uppercase;letter-spacing:1px;font-size:.8rem;transition:transform .18s ease,background .18s ease,color .18s ease;}
-.featCard:hover{transform:translateY(-3px);background:var(--pos);color:var(--bg);}
-.featIcon{font-size:1.7rem;}
+.legal p,.legal li{color:var(--fg);font-size:.92rem;line-height:1.6;}
+.legal h3{font-size:.95rem;letter-spacing:.3px;margin-top:20px;color:var(--pos);}
+.accCard{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--card);}
+.hero{text-align:center;padding:26px 6px 6px;}
+.heroTag{display:inline-block;border:1px solid var(--line);border-radius:20px;padding:5px 14px;font-size:.72rem;letter-spacing:1.2px;color:var(--muted);margin-bottom:16px;background:var(--card);}
+.heroTitle{font-size:2.3rem;font-weight:700;letter-spacing:.3px;margin:0 0 12px;color:var(--fg);}
+.heroSub{color:var(--muted);font-size:.98rem;max-width:420px;margin:0 auto;line-height:1.6;}
+.cardGrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:28px;}
+.featCard{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:24px 10px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;color:var(--fg);font-weight:700;letter-spacing:.3px;font-size:.85rem;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;font-family:inherit;}
+.featCard:hover{transform:translateY(-3px);border-color:var(--pos);box-shadow:var(--glow);color:var(--pos);}
+/* dice */
+.diceGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:16px 0;}
+.dieBtn{padding:12px 4px;background:var(--card);border:1px solid var(--line);border-radius:9px;color:var(--fg);font-weight:700;cursor:pointer;font-size:.85rem;font-family:inherit;}
+.dieBtn.active{background:var(--pos);color:var(--pos-fg);border-color:var(--pos);box-shadow:var(--glow);}
+.dieStage{display:flex;justify-content:center;margin:30px 0;}
+.dieBox{width:120px;height:120px;border-radius:20px;border:3px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:2.4rem;font-weight:800;background:var(--card);color:var(--pos);box-shadow:var(--glow);}
+.dieBox.rolling{animation:dieShake .12s linear infinite;}
+.dieBox.settle{animation:dieSettle .35s ease;}
+@keyframes dieShake{0%{transform:rotate(-6deg) scale(1.02);}50%{transform:rotate(6deg) scale(.98);}100%{transform:rotate(-6deg) scale(1.02);}}
+@keyframes dieSettle{0%{transform:scale(1.3) rotate(8deg);}60%{transform:scale(.94) rotate(-4deg);}100%{transform:scale(1) rotate(0deg);}}
+#diceLabel{text-align:center;color:var(--muted);margin-top:10px;letter-spacing:.4px;font-size:.85rem;}
+/* communities */
+.backBtn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.8rem;letter-spacing:.4px;margin-bottom:12px;padding:0;font-family:inherit;}
+.backBtn:hover{color:var(--pos);}
+.commItem,.roomItem{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:10px;padding:13px;margin-bottom:8px;background:var(--card);cursor:pointer;transition:border-color .15s ease;}
+.commItem:hover,.roomItem:hover{border-color:var(--pos);color:var(--pos);}
+.roomItemRow{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:var(--card);overflow:hidden;}
+.roomItemRow .roomMain{flex:1;padding:13px;cursor:pointer;}
+.roomItemRow .roomActions{display:flex;gap:0;}
+.roomItemRow button{background:none;border:none;border-left:1px solid var(--line);color:var(--muted);padding:0 14px;cursor:pointer;font-size:.72rem;letter-spacing:.3px;align-self:stretch;font-family:inherit;}
+.roomItemRow button:hover{color:var(--ember);}
+.codeBadge{display:inline-block;border:1px solid var(--pos);color:var(--pos);border-radius:6px;padding:2px 9px;font-size:.7rem;letter-spacing:2px;font-weight:700;margin-left:8px;}
+.memberList{list-style:none;padding:0;margin:8px 0;}
+.memberList li{padding:8px 12px;border:1px solid var(--line);border-radius:8px;margin-bottom:4px;font-size:.85rem;background:var(--card);}
 </style>
 </head>
 <body>
-<div id="themeOverlay"></div>
 <header>
-  <h1 id="siteTitle">CCG Hub</h1>
-  <button id="themeBtn">Switch to Smudge</button>
+  <h1 id="siteTitle">Hub</h1>
+  <p class="siteSubtitle">Private spaces for the people you trust.</p>
 </header>
 <nav>
   <button data-p="home" class="navactive">Home</button>
-  <button data-p="wheel">Wheel</button>
-  <button data-p="chat">Chat</button>
-  <button data-p="polls">Polls</button>
-  <button data-p="dice">Dice</button>
+  <button data-p="communities">Communities</button>
+  <button id="toolsNavBtn" type="button">Tools ▾</button>
   <button data-p="account">Account</button>
   <button data-p="privacy">Privacy</button>
 </nav>
+<div class="dropdownMenu" id="toolsDropdown">
+  <button data-p="wheel">Wheel</button>
+  <button data-p="polls">Polls</button>
+  <button data-p="dice">Dice</button>
+</div>
 <main>
 
   <section id="home" class="panel active show">
     <div class="hero">
-      <span class="heroTag">Friend Group Hub</span>
-      <h2 class="heroTitle" id="siteTitleHome" style="border:none;">CCG Hub</h2>
-      <p class="heroSub" id="homeText">The group hub. Spin the wheel, vote in a poll, chat, or roll some dice.</p>
+      <span class="heroTag">Media Platform Made With Quality</span>
+      <h2 class="heroTitle" style="border:none;">Hub</h2>
+      <p class="heroSub">Create a private community, invite the people you choose, and organize your own chat rooms — plus a few small tools on the side.</p>
     </div>
     <div class="cardGrid">
-      <button class="featCard" data-goto="wheel"><span>Wheel</span></button>
-      <button class="featCard" data-goto="chat"><span>Chat</span></button>
-      <button class="featCard" data-goto="polls"><span>Polls</span></button>
-      <button class="featCard" data-goto="dice"><span>Dice</span></button>
+      <button class="featCard" data-goto="communities"><span>Communities</span></button>
+      <button class="featCard" data-goto-tools="1"><span>Tools</span></button>
     </div>
-    <p class="muted" style="text-align:center;margin-top:22px;">Wheel, Chat and Polls are shared with everyone who opens this page.</p>
+    <p class="muted" style="text-align:center;margin-top:22px;">Communities are invite-only — an admin has to add you.</p>
+  </section>
+
+  <section id="communities" class="panel">
+    <h2>Communities</h2>
+
+    <div id="commNeedAuth">
+      <p class="muted">Sign in with Google and choose a username in the Account tab to create or join communities.</p>
+    </div>
+
+    <div id="commViewList" class="hidden">
+      <div class="row">
+        <input type="text" id="joinCodeInput" placeholder="Enter a 3-letter room code" maxlength="3" style="text-transform:uppercase;">
+        <button class="btn" id="joinCodeBtn">Join</button>
+      </div>
+      <p class="muted" id="joinCodeNote"></p>
+      <div class="row">
+        <input type="text" id="newCommName" placeholder="New community name..." maxlength="30">
+        <button class="btn" id="newCommBtn">Create</button>
+      </div>
+      <div id="commList"></div>
+    </div>
+
+    <div id="commViewDetail" class="hidden">
+      <button class="backBtn" id="backToList">&larr; Your Communities</button>
+      <h2 id="commDetailName" style="border:none;"></h2>
+
+      <div id="ownerControls" class="hidden">
+        <div class="accCard" style="margin-bottom:14px;">
+          <p class="muted">Add a member by their username.</p>
+          <div class="row">
+            <input type="text" id="addMemberInput" placeholder="username">
+            <button class="btn outline" id="addMemberBtn">Add</button>
+          </div>
+          <p class="muted" id="addMemberNote"></p>
+        </div>
+        <div class="accCard" style="margin-bottom:14px;">
+          <p class="muted">Create a sub chat room.</p>
+          <div class="row">
+            <input type="text" id="newRoomInput" placeholder="Room name...">
+            <button class="btn outline" id="newRoomBtn">Create Room</button>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="text-transform:uppercase;letter-spacing:1px;font-size:.85rem;color:var(--muted);">Rooms</h3>
+      <div id="roomList"></div>
+
+      <h3 style="text-transform:uppercase;letter-spacing:1px;font-size:.85rem;color:var(--muted);margin-top:20px;">Members</h3>
+      <ul class="memberList" id="memberList"></ul>
+    </div>
+
+    <div id="commViewRoom" class="hidden">
+      <button class="backBtn" id="backToDetail">&larr; Rooms</button>
+      <h2 id="roomDetailName" style="border:none;display:inline-block;"></h2>
+      <span class="codeBadge" id="roomDetailCode"></span>
+      <div class="chatLog" id="roomChatLog" style="margin-top:14px;"></div>
+      <div class="row">
+        <input type="text" id="roomMsgInput" placeholder="Type a message...">
+        <button class="btn" id="roomSendBtn">Send</button>
+      </div>
+      <button class="btn danger hidden" id="deleteRoomBtn" style="margin-top:14px;">Delete This Room</button>
+    </div>
   </section>
 
   <section id="wheel" class="panel">
@@ -111,21 +211,6 @@ ul.optlist li button{background:none;border:none;color:var(--muted);cursor:point
     <div id="wheelWrap"><svg id="wheelSvg" viewBox="0 0 300 300"></svg></div>
     <div style="text-align:center;"><button class="btn" id="spinBtn">Spin</button></div>
     <div id="result"></div>
-  </section>
-
-  <section id="chat" class="panel">
-    <h2>Chat</h2>
-    <div id="chatGate" class="row">
-      <p class="muted">Set your username in the Account tab to join chat.</p>
-    </div>
-    <div id="chatBox" class="hidden">
-      <div id="chatLog"></div>
-      <div class="row">
-        <input type="text" id="msgInput" placeholder="Type a message...">
-        <button class="btn" id="sendMsg">Send</button>
-      </div>
-      <p class="muted" id="whoAmI"></p>
-    </div>
   </section>
 
   <section id="polls" class="panel">
@@ -146,69 +231,79 @@ ul.optlist li button{background:none;border:none;color:var(--muted);cursor:point
 
   <section id="dice" class="panel">
     <h2>Dice Roller</h2>
-    <div class="row">
-      <input type="text" id="sidesInput" value="6" placeholder="Sides">
-      <button class="btn" id="rollBtn">Roll</button>
+    <div class="diceGrid" id="diceGrid">
+      <button class="dieBtn active" data-sides="4">D4</button>
+      <button class="dieBtn" data-sides="6">D6</button>
+      <button class="dieBtn" data-sides="8">D8</button>
+      <button class="dieBtn" data-sides="10">D10</button>
+      <button class="dieBtn" data-sides="12">D12</button>
+      <button class="dieBtn" data-sides="20">D20</button>
+      <button class="dieBtn" data-sides="100">D100</button>
     </div>
-    <div id="diceResult">-</div>
+    <div class="dieStage"><div class="dieBox" id="dieBox">-</div></div>
+    <div id="diceLabel">Pick a die</div>
+    <div style="text-align:center;margin-top:16px;"><button class="btn" id="rollBtn">Roll</button></div>
   </section>
 
   <section id="account" class="panel">
     <h2>Account</h2>
-    <div class="accCard">
-      <div id="noAcc">
-        <p class="muted">Pick a display name. It's remembered on this device/browser and shown in Chat.</p>
-        <div class="row">
-          <input type="text" id="acctName" placeholder="Display name..." maxlength="20">
-          <button class="btn" id="acctSave">Save</button>
-        </div>
-        <div class="row"><button class="btn outline" id="googleBtn" style="width:100%;">Continue with Google</button></div>
-        <p class="muted" id="googleNote" style="display:none;"></p>
-      </div>
-      <div id="hasAcc" class="hidden">
-        <p>Signed in as <b id="acctNameShown"></b></p>
-        <div class="row">
-          <button class="btn outline" id="acctChange">Change Name</button>
-          <button class="btn outline" id="acctLogout">Log Out</button>
-        </div>
-      </div>
+    <div class="accCard" id="acctSignedOut">
+      <p class="muted">Sign in with Google to create or join Communities and set a username.</p>
+      <div class="row"><button class="btn" id="googleBtn" style="width:100%;">Continue with Google</button></div>
+      <p class="muted" id="googleNote" style="display:none;"></p>
     </div>
-    <p class="muted" style="margin-top:14px;">This is a lightweight per-device profile, not a secured password login — see the Privacy tab for details.</p>
+    <div class="accCard hidden" id="acctNeedUsername">
+      <p>Signed in as <b id="acctGoogleName"></b>.</p>
+      <p class="muted">Choose a username — this is what others will see and use to add you to a community.</p>
+      <div class="row">
+        <input type="text" id="usernameInput" placeholder="username" maxlength="20">
+        <button class="btn" id="claimUsernameBtn">Claim</button>
+      </div>
+      <p class="muted" id="usernameNote"></p>
+    </div>
+    <div class="accCard hidden" id="acctReady">
+      <p>Signed in as <b id="acctUsernameShown"></b></p>
+      <div class="row"><button class="btn outline" id="acctSignOut">Sign Out</button></div>
+    </div>
+    <p class="muted" style="margin-top:14px;">Wheel and Polls stay open to any visitor and don't require signing in.</p>
   </section>
 
   <section id="privacy" class="panel legal">
     <h2>Privacy Policy</h2>
-    <p class="muted">Last updated: <span id="policyDate"></span>. This is a community-run friend-group site, not a registered business, and this policy is written for transparency — it is not formal legal advice, and it hasn't been reviewed by a lawyer.</p>
+    <p class="muted">Last updated: <span id="policyDate"></span>. This is a community-run site, not a registered business, and this policy is written for transparency — it is not formal legal advice, and it hasn't been reviewed by a lawyer.</p>
 
     <h3>What we collect</h3>
     <ul>
-      <li>Display name / username you choose in Account.</li>
-      <li>A random device identifier stored in your browser (localStorage), used only to remember your name and poll votes on that device.</li>
-      <li>Messages you post in Chat, options you add to the Wheel, and polls/votes you create.</li>
-      <li>Your color-theme choice (CCG or Smudge Society).</li>
+      <li>Your Google account name/email, used to sign in and shown next to the username you choose.</li>
+      <li>The username you choose, and which communities/rooms you're a member of.</li>
+      <li>Messages posted in rooms, wheel options, and poll votes.</li>
+      <li>A random visitor identifier used to prevent double poll votes.</li>
     </ul>
 
     <h3>What we don't collect</h3>
     <ul>
-      <li>No passwords — this site has no password-based login, so none are requested or stored.</li>
-      <li>No email addresses, phone numbers, or payment information.</li>
+      <li>No passwords — sign-in is handled entirely by Google.</li>
+      <li>No payment information.</li>
       <li>No tracking cookies or third-party analytics/advertising scripts.</li>
     </ul>
 
     <h3>How it's stored and who can see it</h3>
-    <p>Chat messages, wheel options, and polls are stored in shared cloud storage tied to this page and are visible to anyone you share this page's link with — treat it like a group chat, not a private diary. Your display name and device identifier stay on your own device except when your name is shown next to something you post.</p>
+    <p>Community and room content is visible only to that community's members and its admin. Wheel options and polls are visible to anyone who opens this page.</p>
+
+    <h3>Admin controls</h3>
+    <p>A community's creator (admin) chooses who is added, can create and delete rooms, and can see the member list. Room creators can delete rooms they created.</p>
 
     <h3>Retention & deletion</h3>
-    <p>Content persists until manually removed (e.g. deleting a wheel option). You can clear your local profile anytime from the Account tab; this removes your saved name from your device but does not retroactively delete past messages.</p>
+    <p>Content persists until a room or option is manually deleted. Deleting a room removes its messages.</p>
 
     <h3>Children's privacy</h3>
-    <p>This site is intended for the friend group that was given the link and is not directed at children under 13.</p>
+    <p>This site is intended for the people who were personally invited and is not directed at children under 13.</p>
 
     <h3>Changes</h3>
     <p>This policy may be updated as the site changes. Continued use after an update means you accept the current version.</p>
 
     <h3>Contact</h3>
-    <p>Questions about your data on this site should go directly to whoever shared the link with you (the site's owner/admin).</p>
+    <p>Questions about your data on this site should go directly to whoever invited you (the site's owner/admin).</p>
   </section>
 
 </main>
@@ -226,26 +321,39 @@ const firebaseConfig = {
   appId: ""
 };
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-import {
-  getFirestore, doc, setDoc, onSnapshot, collection, query, orderBy, limit
-} from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
-import {
-  getAuth, signInAnonymously, onAuthStateChanged, GoogleAuthProvider, signInWithPopup
-} from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+let fbApp=null, fs=null, auth=null;
+let fbReady=false;
+let initializeApp,getFirestore,doc,setDoc,getDoc,deleteDoc,onSnapshot,collection,query,orderBy,limit,getDocs,getAuth,signInAnonymously,onAuthStateChanged,GoogleAuthProvider,signInWithPopup,fbSignOut;
 
-const fbApp = initializeApp(firebaseConfig);
-const fs = getFirestore(fbApp);
-const auth = getAuth(fbApp);
+async function loadFirebase(){
+  try{
+    if(!firebaseConfig.apiKey) throw new Error('no config');
+    const appMod = await import("https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js");
+    const fsMod = await import("https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js");
+    const authMod = await import("https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js");
+    ({ initializeApp } = appMod);
+    ({ getFirestore, doc, setDoc, getDoc, deleteDoc, onSnapshot, collection, query, orderBy, limit, getDocs } = fsMod);
+    ({ getAuth, signInAnonymously, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut: fbSignOut } = authMod);
+    fbApp = initializeApp(firebaseConfig);
+    fs = getFirestore(fbApp);
+    auth = getAuth(fbApp);
+    fbReady = true;
+  }catch(e){
+    console.warn('Firebase not configured/available — backend features show as unavailable.', e);
+    fbReady=false;
+  }
+}
 
-// Thin shim so the rest of this file can keep using db.doc(...).set(...) /
-// db.collection(...).orderBy(...).onSnapshot(...) unchanged.
+// Thin shim so most of this file can keep using db.doc(...).set(...) /
+// db.collection(...).orderBy(...).onSnapshot(...) for arbitrary (incl. nested) paths.
 function makeDb(){
   function wrapDoc(path){
     const ref = doc(fs, path);
     return {
       id: ref.id,
       async set(data){ await setDoc(ref, data); },
+      async get(){ const snap=await getDoc(ref); return { exists:snap.exists(), data:()=>snap.data(), id:snap.id }; },
+      async delete(){ await deleteDoc(ref); },
       onSnapshot(next, err){
         return onSnapshot(ref, snap=>next({ exists:snap.exists(), data:()=>snap.data(), id:snap.id }), err);
       }
@@ -257,6 +365,7 @@ function makeDb(){
       doc(id){ return wrapDoc(path + '/' + (id || doc(collection(fs,path)).id)); },
       orderBy(field,dir){ return wrapCollection(path, constraints.concat([orderBy(field, dir||'asc')])); },
       limit(n){ return wrapCollection(path, constraints.concat([limit(n)])); },
+      async get(){ const q=query(collection(fs,path), ...constraints); const snap=await getDocs(q); return { docs: snap.docs.map(d=>({id:d.id,data:()=>d.data()})) }; },
       onSnapshot(next, err){
         const q = query(collection(fs,path), ...constraints);
         return onSnapshot(q, snap=>next({ docs: snap.docs.map(d=>({ id:d.id, data:()=>d.data() })) }), err);
@@ -265,27 +374,8 @@ function makeDb(){
   }
   return { doc:wrapDoc, collection:(p)=>wrapCollection(p) };
 }
-document.getElementById('policyDate').textContent = new Date().toLocaleDateString();
 
-// ---------- Google Sign-In (foundation — see README once self-hosted) ----------
-// ---------- Google Sign-In (Firebase Auth) ----------
-function initGoogleButton(){
-  const btn=document.getElementById('googleBtn');
-  const note=document.getElementById('googleNote');
-  btn.addEventListener('click', async ()=>{
-    try{
-      const result = await signInWithPopup(auth, new GoogleAuthProvider());
-      const name = result.user.displayName || result.user.email || 'Google User';
-      username=name;
-      localStorage.setItem('ccg_username',name);
-      if(db){ try{ db.doc('users/'+deviceId).set({username:name, provider:'google', updated:Date.now()}); }catch(e){} }
-      refreshAccountUI();
-    }catch(e){
-      note.style.display='block';
-      note.textContent='Google sign-in failed or was cancelled: '+(e && e.code ? e.code : 'unknown error');
-    }
-  });
-}
+document.getElementById('policyDate').textContent = new Date().toLocaleDateString();
 
 // ---------- panel switching with animation ----------
 function showPanel(id){
@@ -299,102 +389,145 @@ function showPanel(id){
   next.classList.add('active');
   requestAnimationFrame(()=>requestAnimationFrame(()=>next.classList.add('show')));
 }
-document.querySelectorAll('nav button').forEach(b=>{
+document.querySelectorAll('nav button[data-p], #toolsDropdown button[data-p]').forEach(b=>{
   b.addEventListener('click',()=>{
-    document.querySelectorAll('nav button').forEach(x=>x.classList.remove('navactive'));
-    b.classList.add('navactive');
+    document.querySelectorAll('nav button[data-p]').forEach(x=>x.classList.remove('navactive'));
+    document.getElementById('toolsDropdown').classList.remove('open');
+    if(['wheel','polls','dice'].includes(b.dataset.p)){
+      document.getElementById('toolsNavBtn').classList.add('navactive');
+    } else {
+      b.classList.add('navactive');
+    }
     showPanel(b.dataset.p);
   });
 });
-document.querySelectorAll('.featCard').forEach(c=>{
+function positionToolsDropdown(){
+  const btn=document.getElementById('toolsNavBtn');
+  const menu=document.getElementById('toolsDropdown');
+  const r=btn.getBoundingClientRect();
+  menu.style.top = r.bottom+'px';
+  menu.style.minWidth = Math.max(r.width,140)+'px';
+  menu.style.right = Math.max(8, window.innerWidth - r.right)+'px';
+  menu.style.left = 'auto';
+}
+document.getElementById('toolsNavBtn').addEventListener('click',(e)=>{
+  e.stopPropagation();
+  const menu=document.getElementById('toolsDropdown');
+  if(!menu.classList.contains('open')){ positionToolsDropdown(); }
+  menu.classList.toggle('open');
+});
+document.addEventListener('click',()=>document.getElementById('toolsDropdown').classList.remove('open'));
+window.addEventListener('scroll',()=>document.getElementById('toolsDropdown').classList.remove('open'), {passive:true});
+window.addEventListener('resize',()=>document.getElementById('toolsDropdown').classList.remove('open'));
+document.querySelectorAll('.featCard[data-goto]').forEach(c=>{
   c.addEventListener('click',()=>{
-    const target=c.dataset.goto;
-    const navBtn=document.querySelector('nav button[data-p="'+target+'"]');
+    const navBtn=document.querySelector('nav button[data-p="'+c.dataset.goto+'"]');
     if(navBtn) navBtn.click();
   });
 });
+document.querySelectorAll('.featCard[data-goto-tools]').forEach(c=>{
+  c.addEventListener('click',()=>{ document.getElementById('toolsNavBtn').click(); });
+});
 
-// ---------- theme switch ----------
-const THEMES = {
-  ccg:{title:'CCG Hub', home:"The group hub. Spin the wheel, vote in a poll, chat, or roll some dice.", btn:'Switch to Smudge'},
-  smudge:{title:'Smudge Society', home:"Welcome to the Smudge Society corner. Same tools, different vibe.", btn:'Switch to CCG'}
-};
-function applyTheme(t){
-  document.documentElement.setAttribute('data-theme', t);
-  document.getElementById('siteTitle').textContent = THEMES[t].title;
-  document.getElementById('siteTitleHome').textContent = THEMES[t].title;
-  document.getElementById('homeText').textContent = THEMES[t].home;
-  document.getElementById('themeBtn').textContent = THEMES[t].btn;
-  document.title = THEMES[t].title;
-}
-let currentTheme = localStorage.getItem('ccg_theme') || 'ccg';
-applyTheme(currentTheme);
-document.getElementById('themeBtn').onclick=()=>{
-  const overlay=document.getElementById('themeOverlay');
-  overlay.classList.add('active');
-  setTimeout(()=>{
-    currentTheme = currentTheme==='smudge' ? 'ccg' : 'smudge';
-    localStorage.setItem('ccg_theme',currentTheme);
-    applyTheme(currentTheme);
-  },320);
-  setTimeout(()=>overlay.classList.remove('active'),640);
-};
-
-// ---------- identity (Firebase anonymous auth gives every visitor a stable id, no password) ----------
+// ---------- identity ----------
 let deviceId = localStorage.getItem('ccg_device_id') || ('d_' + Date.now().toString(36) + Math.random().toString(36).slice(2,10));
 localStorage.setItem('ccg_device_id', deviceId);
-let username = localStorage.getItem('ccg_username') || '';
+let myUid = null;
+let myUsername = localStorage.getItem('ccg_username') || '';
+let db = null;
 
 function refreshAccountUI(){
-  const noAcc=document.getElementById('noAcc');
-  const hasAcc=document.getElementById('hasAcc');
-  if(username){
-    noAcc.classList.add('hidden'); hasAcc.classList.remove('hidden');
-    document.getElementById('acctNameShown').textContent=username;
-    document.getElementById('chatGate').classList.add('hidden');
-    document.getElementById('chatBox').classList.remove('hidden');
-    document.getElementById('whoAmI').textContent='Chatting as ' + username;
+  const signedOut=document.getElementById('acctSignedOut');
+  const needUsername=document.getElementById('acctNeedUsername');
+  const ready=document.getElementById('acctReady');
+  signedOut.classList.add('hidden'); needUsername.classList.add('hidden'); ready.classList.add('hidden');
+  if(!auth || !auth.currentUser || auth.currentUser.isAnonymous){
+    signedOut.classList.remove('hidden');
+  } else if(!myUsername){
+    needUsername.classList.remove('hidden');
+    document.getElementById('acctGoogleName').textContent = auth.currentUser.displayName || auth.currentUser.email || 'your Google account';
   } else {
-    noAcc.classList.remove('hidden'); hasAcc.classList.add('hidden');
-    document.getElementById('chatGate').classList.remove('hidden');
-    document.getElementById('chatBox').classList.add('hidden');
+    ready.classList.remove('hidden');
+    document.getElementById('acctUsernameShown').textContent = '@'+myUsername;
+  }
+  refreshCommunitiesGate();
+}
+function refreshCommunitiesGate(){
+  const needAuth=document.getElementById('commNeedAuth');
+  const list=document.getElementById('commViewList');
+  const loggedIn = !!(auth && auth.currentUser && !auth.currentUser.isAnonymous && myUsername);
+  if(loggedIn){
+    needAuth.classList.add('hidden');
+    if(document.getElementById('commViewDetail').classList.contains('hidden') && document.getElementById('commViewRoom').classList.contains('hidden')){
+      list.classList.remove('hidden');
+    }
+  } else {
+    needAuth.classList.remove('hidden');
+    list.classList.add('hidden');
+    document.getElementById('commViewDetail').classList.add('hidden');
+    document.getElementById('commViewRoom').classList.add('hidden');
   }
 }
-document.getElementById('acctSave').onclick=()=>{
-  const v=document.getElementById('acctName').value.trim();
-  if(!v) return;
-  username=v;
-  localStorage.setItem('ccg_username',v);
-  if(db){ try{ db.doc('users/'+deviceId).set({username:v, updated:Date.now()}); }catch(e){} }
-  refreshAccountUI();
-};
-document.getElementById('acctChange').onclick=()=>{
-  document.getElementById('acctName').value=username;
-  username=''; refreshAccountUI();
-};
-document.getElementById('acctLogout').onclick=()=>{
-  username=''; localStorage.removeItem('ccg_username'); refreshAccountUI();
-};
-refreshAccountUI();
-initGoogleButton();
+
+document.getElementById('googleBtn').addEventListener('click', async ()=>{
+  const note=document.getElementById('googleNote');
+  if(!fbReady || !auth){ note.style.display='block'; note.textContent='Backend not configured yet — see README.md.'; return; }
+  try{
+    await signInWithPopup(auth, new GoogleAuthProvider());
+  }catch(e){
+    note.style.display='block';
+    note.textContent='Google sign-in failed or was cancelled: '+(e && e.code ? e.code : 'unknown error');
+  }
+});
+document.getElementById('claimUsernameBtn').addEventListener('click', async ()=>{
+  const note=document.getElementById('usernameNote');
+  const raw=document.getElementById('usernameInput').value.trim();
+  const name=raw.toLowerCase().replace(/[^a-z0-9_]/g,'');
+  if(!name || name.length<3){ note.textContent='Use at least 3 letters/numbers.'; return; }
+  if(!db){ note.textContent='Backend unavailable right now.'; return; }
+  try{
+    const existing = await db.doc('usernames/'+name).get();
+    if(existing.exists){ note.textContent='That username is taken — try another.'; return; }
+    await db.doc('usernames/'+name).set({ uid: myUid });
+    await db.doc('users/'+myUid).set({ username:name, email: auth.currentUser.email||'', updated:Date.now() });
+    myUsername=name;
+    localStorage.setItem('ccg_username', name);
+    note.textContent='';
+    refreshAccountUI();
+  }catch(e){ note.textContent='Could not claim that username. Try again.'; }
+});
+document.getElementById('acctSignOut').addEventListener('click', async ()=>{
+  if(auth) await fbSignOut(auth);
+  myUsername='';
+  localStorage.removeItem('ccg_username');
+});
 
 // ---------- Firebase backend bootstrap ----------
-let db=null;
-if(!firebaseConfig.apiKey){
-  console.warn('Firebase is not configured yet — Wheel/Chat/Polls will show as unavailable. See README.md.');
-  initWheel(); initChat(); initPolls();
-} else {
-  onAuthStateChanged(auth, user=>{
+(async()=>{
+  await loadFirebase();
+  if(!fbReady){
+    initWheel(); initPolls();
+    refreshAccountUI();
+    return;
+  }
+  onAuthStateChanged(auth, async user=>{
     if(!user){ signInAnonymously(auth).catch(e=>console.error('Anonymous sign-in failed', e)); return; }
-    deviceId = user.uid; // real per-visitor id once signed in (anonymous or Google)
-    if(!db){
-      db = makeDb();
-      initWheel();
-      initChat();
-      initPolls();
+    myUid = user.uid;
+    deviceId = user.uid;
+    if(!db){ db = makeDb(); initWheel(); initPolls(); initCommunities(); }
+    if(!user.isAnonymous){
+      try{
+        const udoc = await db.doc('users/'+user.uid).get();
+        myUsername = (udoc.exists && udoc.data().username) || '';
+        if(myUsername) localStorage.setItem('ccg_username', myUsername);
+      }catch(e){}
+    } else {
+      myUsername='';
     }
+    subscribeMyMemberships();
+    refreshAccountUI();
   });
-}
+})();
 
 // ================= WHEEL =================
 let wheelOptions=["Pizza","Tacos","Sushi","Stay In"];
@@ -442,35 +575,6 @@ async function initWheel(){
   };
   if(db){ try{ db.doc('wheel/options').onSnapshot(s=>{ const d=s&&s.exists?s.data():null; if(d&&Array.isArray(d.items)&&d.items.length) wheelOptions=d.items; render(); }); }catch(e){ render(); } }
   else render();
-}
-
-// ================= CHAT =================
-function initChat(){
-  const chatLog=document.getElementById('chatLog');
-  const msgInput=document.getElementById('msgInput');
-  if(db){
-    try{
-      db.collection('messages').orderBy('ts').limit(100).onSnapshot(snap=>{
-        chatLog.innerHTML='';
-        (snap && snap.docs ? snap.docs : []).forEach(docSnap=>{
-          const m=docSnap.data()||{};
-          const div=document.createElement('div'); div.className='msg';
-          const time=m.ts?new Date(m.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'';
-          div.innerHTML=`<b>${escapeHtml(m.user||'?')}</b><span class="t">${time}</span><br>${escapeHtml(m.text||'')}`;
-          chatLog.appendChild(div);
-        });
-        chatLog.scrollTop=chatLog.scrollHeight;
-      }, err=>{ chatLog.innerHTML='<div class="msg muted">Chat storage unavailable right now.</div>'; });
-    }catch(e){ chatLog.innerHTML='<div class="msg muted">Chat storage unavailable right now.</div>'; }
-  } else { chatLog.innerHTML='<div class="msg muted">Chat storage unavailable right now.</div>'; }
-  async function send(){
-    const v=msgInput.value.trim();
-    if(!v||!db||!username) return;
-    msgInput.value='';
-    try{ const id='m_'+Date.now()+'_'+Math.random().toString(36).slice(2,7); await db.doc('messages/'+id).set({user:username,text:v,ts:Date.now()}); }catch(e){}
-  }
-  document.getElementById('sendMsg').onclick=send;
-  msgInput.addEventListener('keydown',e=>{ if(e.key==='Enter') send(); });
 }
 
 // ================= POLLS =================
@@ -538,10 +642,244 @@ function renderPoll(p,list){
 }
 
 // ================= DICE =================
+let selectedSides=4;
+document.querySelectorAll('.dieBtn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.dieBtn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedSides=parseInt(btn.dataset.sides);
+    document.getElementById('diceLabel').textContent='d'+selectedSides+' selected';
+  });
+});
 document.getElementById('rollBtn').onclick=()=>{
-  const sides=Math.max(2,parseInt(document.getElementById('sidesInput').value)||6);
-  document.getElementById('diceResult').textContent=Math.floor(Math.random()*sides)+1;
+  const box=document.getElementById('dieBox');
+  box.classList.remove('settle');
+  box.classList.add('rolling');
+  document.getElementById('diceLabel').textContent='Rolling d'+selectedSides+'...';
+  let ticks=0;
+  const iv=setInterval(()=>{
+    box.textContent = 1+Math.floor(Math.random()*selectedSides);
+    ticks++;
+    if(ticks>10){
+      clearInterval(iv);
+      const finalRoll = 1+Math.floor(Math.random()*selectedSides);
+      box.textContent = finalRoll;
+      box.classList.remove('rolling');
+      box.classList.add('settle');
+      document.getElementById('diceLabel').textContent='d'+selectedSides+' → '+finalRoll;
+    }
+  },70);
 };
+
+// ================= COMMUNITIES =================
+function threeLetterCode(){
+  const L='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  return L[Math.floor(Math.random()*26)]+L[Math.floor(Math.random()*26)]+L[Math.floor(Math.random()*26)];
+}
+let currentCommunityId=null, currentCommunityOwner=null, currentRoomId=null, currentRoomCreator=null;
+let roomListUnsub=null, memberListUnsub=null, roomMsgUnsub=null;
+
+let membershipUnsub=null;
+function subscribeMyMemberships(){
+  if(membershipUnsub){ membershipUnsub(); membershipUnsub=null; }
+  if(!db || !myUid) return;
+  membershipUnsub = db.collection('users/'+myUid+'/memberships').onSnapshot(snap=>{
+    const list=document.getElementById('commList');
+    if(!list) return;
+    list.innerHTML='';
+    (snap.docs||[]).forEach(d=>{
+      const m=d.data();
+      const item=document.createElement('div'); item.className='commItem';
+      item.innerHTML=`<span>${escapeHtml(m.name||'Community')}</span><span class="muted">${m.role==='owner'?'admin':'member'}</span>`;
+      item.onclick=()=>openCommunity(d.id);
+      list.appendChild(item);
+    });
+    if(!(snap.docs||[]).length){ list.innerHTML='<p class="muted">No communities yet — create one above.</p>'; }
+  }, ()=>{});
+}
+
+function initCommunities(){
+  refreshCommunitiesGate();
+
+  document.getElementById('newCommBtn').onclick=async()=>{
+    const name=document.getElementById('newCommName').value.trim();
+    if(!name || !db || !myUid || !myUsername) return;
+    const cref=db.collection('communities').doc();
+    const cid=cref.id;
+    await cref.set({ name, ownerId:myUid, ownerUsername:myUsername, createdAt:Date.now() });
+    await db.doc('communities/'+cid+'/members/'+myUid).set({ username:myUsername, addedAt:Date.now(), role:'owner' });
+    await db.doc('users/'+myUid+'/memberships/'+cid).set({ name, role:'owner', ts:Date.now() });
+    document.getElementById('newCommName').value='';
+    openCommunity(cid);
+  };
+
+  document.getElementById('joinCodeBtn').onclick=async()=>{
+    const note=document.getElementById('joinCodeNote');
+    const code=document.getElementById('joinCodeInput').value.trim().toUpperCase();
+    note.textContent='';
+    if(code.length!==3 || !db) { note.textContent='Enter a 3-letter code.'; return; }
+    try{
+      const codeDoc = await db.doc('roomCodes/'+code).get();
+      if(!codeDoc.exists){ note.textContent='No room found with that code.'; return; }
+      const { communityId, roomId } = codeDoc.data();
+      const memberDoc = await db.doc('communities/'+communityId+'/members/'+myUid).get();
+      if(!memberDoc.exists){ note.textContent="You're not a member of that community — ask the admin to add you first."; return; }
+      openCommunity(communityId, ()=>openRoom(communityId, roomId));
+    }catch(e){ note.textContent='Could not look up that code.'; }
+  };
+
+  document.getElementById('backToList').onclick=()=>{
+    if(roomListUnsub) roomListUnsub();
+    if(memberListUnsub) memberListUnsub();
+    currentCommunityId=null;
+    document.getElementById('commViewDetail').classList.add('hidden');
+    document.getElementById('commViewList').classList.remove('hidden');
+  };
+  document.getElementById('backToDetail').onclick=()=>{
+    if(roomMsgUnsub) roomMsgUnsub();
+    currentRoomId=null;
+    document.getElementById('commViewRoom').classList.add('hidden');
+    document.getElementById('commViewDetail').classList.remove('hidden');
+  };
+
+  document.getElementById('addMemberBtn').onclick=async()=>{
+    const note=document.getElementById('addMemberNote');
+    const uname=document.getElementById('addMemberInput').value.trim().toLowerCase().replace(/[^a-z0-9_]/g,'');
+    note.textContent='';
+    if(!uname || !currentCommunityId) return;
+    try{
+      const uDoc = await db.doc('usernames/'+uname).get();
+      if(!uDoc.exists){ note.textContent='No user with that username.'; return; }
+      const uid = uDoc.data().uid;
+      await db.doc('communities/'+currentCommunityId+'/members/'+uid).set({ username:uname, addedAt:Date.now(), role:'member' });
+      const cSnap = await db.doc('communities/'+currentCommunityId).get();
+      await db.doc('users/'+uid+'/memberships/'+currentCommunityId).set({ name:(cSnap.data()||{}).name||'Community', role:'member', ts:Date.now() });
+      document.getElementById('addMemberInput').value='';
+      note.textContent='Added.';
+    }catch(e){ note.textContent='Could not add that user (check the security rules if this keeps happening).'; }
+  };
+
+  document.getElementById('newRoomBtn').onclick=async()=>{
+    const name=document.getElementById('newRoomInput').value.trim();
+    if(!name || !currentCommunityId) return;
+    let code=threeLetterCode(), tries=0;
+    while(tries<5){
+      const exists=await db.doc('roomCodes/'+code).get();
+      if(!exists.exists) break;
+      code=threeLetterCode(); tries++;
+    }
+    const rref=db.collection('communities/'+currentCommunityId+'/rooms').doc();
+    const rid=rref.id;
+    await rref.set({ name, code, createdBy:myUid, createdAt:Date.now() });
+    await db.doc('roomCodes/'+code).set({ communityId:currentCommunityId, roomId:rid });
+    document.getElementById('newRoomInput').value='';
+  };
+
+  document.getElementById('roomSendBtn').onclick=sendRoomMsg;
+  document.getElementById('roomMsgInput').addEventListener('keydown',e=>{ if(e.key==='Enter') sendRoomMsg(); });
+  document.getElementById('deleteRoomBtn').onclick=async()=>{
+    if(!confirm('Delete this room and its messages?')) return;
+    try{
+      const msgs = await db.collection('communities/'+currentCommunityId+'/rooms/'+currentRoomId+'/messages').get();
+      for(const m of (msgs.docs||[])){ await db.doc('communities/'+currentCommunityId+'/rooms/'+currentRoomId+'/messages/'+m.id).delete(); }
+      const rDoc = await db.doc('communities/'+currentCommunityId+'/rooms/'+currentRoomId).get();
+      if(rDoc.exists && rDoc.data().code){ await db.doc('roomCodes/'+rDoc.data().code).delete(); }
+      await db.doc('communities/'+currentCommunityId+'/rooms/'+currentRoomId).delete();
+      document.getElementById('backToDetail').click();
+    }catch(e){ alert('Could not delete this room.'); }
+  };
+}
+
+async function openCommunity(cid, then){
+  if(roomListUnsub) roomListUnsub();
+  if(memberListUnsub) memberListUnsub();
+  currentCommunityId=cid;
+  document.getElementById('commViewList').classList.add('hidden');
+  document.getElementById('commViewRoom').classList.add('hidden');
+  document.getElementById('commViewDetail').classList.remove('hidden');
+
+  const cDoc = await db.doc('communities/'+cid).get();
+  const cData = cDoc.data()||{};
+  currentCommunityOwner = cData.ownerId;
+  document.getElementById('commDetailName').textContent = cData.name||'Community';
+  document.getElementById('ownerControls').classList.toggle('hidden', currentCommunityOwner!==myUid);
+
+  roomListUnsub = db.collection('communities/'+cid+'/rooms').orderBy('createdAt').onSnapshot(snap=>{
+    const wrap=document.getElementById('roomList');
+    wrap.innerHTML='';
+    (snap.docs||[]).forEach(d=>{
+      const r=d.data();
+      const canManage = (currentCommunityOwner===myUid) || (r.createdBy===myUid);
+      const row=document.createElement('div'); row.className='roomItemRow';
+      row.innerHTML=`<div class="roomMain"><span>${escapeHtml(r.name||'Room')}</span><span class="codeBadge">${escapeHtml(r.code||'')}</span></div>`;
+      row.querySelector('.roomMain').onclick=()=>openRoom(cid, d.id);
+      if(canManage){
+        const actions=document.createElement('div'); actions.className='roomActions';
+        const del=document.createElement('button'); del.textContent='Delete';
+        del.onclick=async(e)=>{
+          e.stopPropagation();
+          if(!confirm('Delete room "'+r.name+'"?')) return;
+          const msgs = await db.collection('communities/'+cid+'/rooms/'+d.id+'/messages').get();
+          for(const m of (msgs.docs||[])){ await db.doc('communities/'+cid+'/rooms/'+d.id+'/messages/'+m.id).delete(); }
+          if(r.code){ await db.doc('roomCodes/'+r.code).delete(); }
+          await db.doc('communities/'+cid+'/rooms/'+d.id).delete();
+        };
+        actions.appendChild(del);
+        row.appendChild(actions);
+      }
+      wrap.appendChild(row);
+    });
+    if(!(snap.docs||[]).length){ wrap.innerHTML='<p class="muted">No rooms yet.</p>'; }
+  });
+
+  memberListUnsub = db.collection('communities/'+cid+'/members').onSnapshot(snap=>{
+    const wrap=document.getElementById('memberList');
+    wrap.innerHTML='';
+    (snap.docs||[]).forEach(d=>{
+      const m=d.data();
+      const li=document.createElement('li');
+      li.textContent='@'+(m.username||'?')+(m.role==='owner'?' — admin':'');
+      wrap.appendChild(li);
+    });
+  });
+
+  if(then) then();
+}
+
+async function openRoom(cid, rid){
+  if(roomMsgUnsub) roomMsgUnsub();
+  currentRoomId=rid;
+  document.getElementById('commViewDetail').classList.add('hidden');
+  document.getElementById('commViewRoom').classList.remove('hidden');
+  const rDoc = await db.doc('communities/'+cid+'/rooms/'+rid).get();
+  const rData = rDoc.data()||{};
+  currentRoomCreator = rData.createdBy;
+  document.getElementById('roomDetailName').textContent = rData.name||'Room';
+  document.getElementById('roomDetailCode').textContent = rData.code||'';
+  document.getElementById('deleteRoomBtn').classList.toggle('hidden', !(currentCommunityOwner===myUid || currentRoomCreator===myUid));
+
+  const log=document.getElementById('roomChatLog');
+  roomMsgUnsub = db.collection('communities/'+cid+'/rooms/'+rid+'/messages').orderBy('ts').limit(200).onSnapshot(snap=>{
+    log.innerHTML='';
+    (snap.docs||[]).forEach(d=>{
+      const m=d.data();
+      const div=document.createElement('div'); div.className='msg';
+      const time=m.ts?new Date(m.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'';
+      div.innerHTML=`<b>${escapeHtml(m.user||'?')}</b><span class="t">${time}</span><br>${escapeHtml(m.text||'')}`;
+      log.appendChild(div);
+    });
+    log.scrollTop=log.scrollHeight;
+  }, err=>{ log.innerHTML='<div class="msg muted">Could not load this room.</div>'; });
+}
+
+async function sendRoomMsg(){
+  const input=document.getElementById('roomMsgInput');
+  const v=input.value.trim();
+  if(!v || !db || !currentCommunityId || !currentRoomId) return;
+  input.value='';
+  const id='m_'+Date.now()+'_'+Math.random().toString(36).slice(2,7);
+  try{ await db.doc('communities/'+currentCommunityId+'/rooms/'+currentRoomId+'/messages/'+id).set({ user:myUsername, uid:myUid, text:v, ts:Date.now() }); }catch(e){}
+}
 
 // ---------- helpers ----------
 function escapeHtml(s){ return (s+'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
