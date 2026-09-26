@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CCG Hub</title>
+<style>
+:root{
+  --bg:#fff; --fg:#111; --line:#111; --muted:#666; --card:#f5f5f5; --pos:#111;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme]),:root[data-theme="ccg"]{ --bg:#0b0b0b; --fg:#eee; --line:#eee; --muted:#999; --card:#1a1a1a; --pos:#eee; }
+}
+:root[data-theme="smudge"]{ --bg:#1b1032; --fg:#f0e6ff; --line:#c9a6ff; --muted:#a48fc9; --card:#2a1a4a; --pos:#ff6fb0; }
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;transition:background .3s ease,color .3s ease;}
+header{position:sticky;top:0;top:env(safe-area-inset-top,0px);background:var(--bg);border-bottom:2px solid var(--line);padding:14px 20px;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+h1{margin:0;font-size:1.25rem;letter-spacing:2px;text-transform:uppercase;font-weight:800;}
+#themeBtn{background:none;border:1px solid var(--line);color:var(--fg);padding:8px 12px;font-size:.75rem;text-transform:uppercase;letter-spacing:1px;cursor:pointer;font-weight:700;white-space:nowrap;}
+nav{display:flex;gap:0;border-bottom:2px solid var(--line);overflow-x:auto;background:var(--bg);position:sticky;top:52px;z-index:9;}
+nav button{flex:1;min-width:76px;padding:11px 6px;background:none;border:none;border-right:1px solid var(--line);color:var(--fg);font-size:.78rem;text-transform:uppercase;letter-spacing:1px;cursor:pointer;font-weight:600;}
+nav button:last-child{border-right:none;}
+nav button.navactive{background:var(--fg);color:var(--bg);}
+main{max-width:640px;margin:0 auto;padding:24px 20px 60px;position:relative;}
+.panel{display:none;opacity:0;transform:translateY(10px);transition:opacity .3s ease,transform .3s ease;}
+.panel.active{display:block;}
+.panel.show{opacity:1;transform:translateY(0);}
+h2{text-transform:uppercase;letter-spacing:1px;font-size:1.1rem;border-bottom:1px solid var(--line);padding-bottom:8px;}
+input[type=text]{width:100%;padding:10px 12px;background:var(--card);border:1px solid var(--line);color:var(--fg);font-size:1rem;border-radius:0;}
+button.btn{padding:10px 16px;background:var(--pos);color:var(--bg);border:1px solid var(--line);font-weight:700;text-transform:uppercase;letter-spacing:1px;cursor:pointer;font-size:.85rem;}
+button.btn.outline{background:none;color:var(--fg);}
+.row{display:flex;gap:8px;margin:12px 0;}
+.row input{flex:1;}
+ul.optlist{list-style:none;padding:0;margin:12px 0;}
+ul.optlist li{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border:1px solid var(--line);margin-bottom:6px;}
+ul.optlist li button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem;}
+#wheelWrap{display:flex;justify-content:center;margin:24px 0;}
+#wheelSvg{max-width:280px;width:100%;height:auto;transform-origin:50% 50%;transition:transform 4s cubic-bezier(.17,.67,.12,.99);}
+#result{text-align:center;font-size:1.3rem;font-weight:800;margin-top:14px;min-height:1.6em;text-transform:uppercase;}
+#chatLog{border:1px solid var(--line);height:320px;overflow-y:auto;padding:10px;margin-bottom:10px;background:var(--card);}
+.msg{margin-bottom:8px;font-size:.92rem;}
+.msg b{text-transform:uppercase;letter-spacing:.5px;color:var(--pos);}
+.msg .t{color:var(--muted);font-size:.7rem;margin-left:6px;}
+#diceResult{font-size:3rem;text-align:center;font-weight:800;margin:20px 0;}
+.muted{color:var(--muted);font-size:.85rem;}
+.hidden{display:none;}
+.pollCard{border:1px solid var(--line);padding:12px;margin-bottom:14px;background:var(--card);}
+.pollQ{font-weight:700;margin-bottom:8px;}
+.pollOpt{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.pollOpt button{flex:1;text-align:left;background:none;border:1px solid var(--line);color:var(--fg);padding:8px;cursor:pointer;}
+.barWrap{flex:1;background:var(--bg);border:1px solid var(--line);height:26px;position:relative;overflow:hidden;}
+.barFill{height:100%;background:var(--pos);transition:width .5s ease;}
+.barLabel{position:absolute;left:6px;top:3px;font-size:.75rem;color:var(--fg);mix-blend-mode:difference;}
+.pollMeta{font-size:.7rem;color:var(--muted);margin-top:4px;}
+#themeOverlay{position:fixed;inset:0;background:var(--pos);opacity:0;pointer-events:none;transition:opacity .35s ease;z-index:999;}
+#themeOverlay.active{opacity:1;}
+.legal p,.legal li{color:var(--fg);font-size:.92rem;line-height:1.5;}
+.legal h3{font-size:.95rem;text-transform:uppercase;letter-spacing:1px;margin-top:20px;}
+.accCard{border:1px solid var(--line);padding:14px;background:var(--card);}
+.hero{text-align:center;padding:20px 6px 6px;}
+.heroTag{display:inline-block;border:1px solid var(--line);padding:3px 10px;font-size:.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
+.heroTitle{font-size:2.1rem;font-weight:800;letter-spacing:1px;margin:0 0 10px;text-transform:uppercase;}
+.heroSub{color:var(--muted);font-size:.95rem;max-width:420px;margin:0 auto;}
+.cardGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:26px;}
+.featCard{border:1px solid var(--line);background:var(--card);padding:22px 10px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;color:var(--fg);font-weight:700;text-transform:uppercase;letter-spacing:1px;font-size:.8rem;transition:transform .18s ease,background .18s ease,color .18s ease;}
+.featCard:hover{transform:translateY(-3px);background:var(--pos);color:var(--bg);}
+.featIcon{font-size:1.7rem;}
+</style>
+</head>
+<body>
+<div id="themeOverlay"></div>
+<header>
+  <h1 id="siteTitle">CCG Hub</h1>
+  <button id="themeBtn">Switch to Smudge</button>
+</header>
+<nav>
+  <button data-p="home" class="navactive">Home</button>
+  <button data-p="wheel">Wheel</button>
+  <button data-p="chat">Chat</button>
+  <button data-p="polls">Polls</button>
+  <button data-p="dice">Dice</button>
+  <button data-p="account">Account</button>
+  <button data-p="privacy">Privacy</button>
+</nav>
+<main>
+
+  <section id="home" class="panel active show">
+    <div class="hero">
+      <span class="heroTag">Friend Group Hub</span>
+      <h2 class="heroTitle" id="siteTitleHome" style="border:none;">CCG Hub</h2>
+      <p class="heroSub" id="homeText">The group hub. Spin the wheel, vote in a poll, chat, or roll some dice.</p>
+    </div>
+    <div class="cardGrid">
+      <button class="featCard" data-goto="wheel"><span class="featIcon">🎡</span><span>Wheel</span></button>
+      <button class="featCard" data-goto="chat"><span class="featIcon">💬</span><span>Chat</span></button>
+      <button class="featCard" data-goto="polls"><span class="featIcon">📊</span><span>Polls</span></button>
+      <button class="featCard" data-goto="dice"><span class="featIcon">🎲</span><span>Dice</span></button>
+    </div>
+    <p class="muted" style="text-align:center;margin-top:22px;">Wheel, Chat and Polls are shared with everyone who opens this page.</p>
+  </section>
+
+  <section id="wheel" class="panel">
+    <h2>Spin the Wheel</h2>
+    <div class="row">
+      <input type="text" id="optInput" placeholder="Add an option..." maxlength="40">
+      <button class="btn" id="addOpt">Add</button>
+    </div>
+    <ul class="optlist" id="optList"></ul>
+    <div id="wheelWrap"><svg id="wheelSvg" viewBox="0 0 300 300"></svg></div>
+    <div style="text-align:center;"><button class="btn" id="spinBtn">Spin</button></div>
+    <div id="result"></div>
+  </section>
+
+  <section id="chat" class="panel">
+    <h2>Chat</h2>
+    <div id="chatGate" class="row">
+      <p class="muted">Set your username in the Account tab to join chat.</p>
+    </div>
+    <div id="chatBox" class="hidden">
+      <div id="chatLog"></div>
+      <div class="row">
+        <input type="text" id="msgInput" placeholder="Type a message...">
+        <button class="btn" id="sendMsg">Send</button>
+      </div>
+      <p class="muted" id="whoAmI"></p>
+    </div>
+  </section>
+
+  <section id="polls" class="panel">
+    <h2>Polls</h2>
+    <div class="accCard" style="margin-bottom:16px;">
+      <div class="row"><input type="text" id="pollQ" placeholder="Poll question..."></div>
+      <div id="pollOptsInputs">
+        <div class="row"><input type="text" class="pollOptInput" placeholder="Option 1"></div>
+        <div class="row"><input type="text" class="pollOptInput" placeholder="Option 2"></div>
+      </div>
+      <div class="row">
+        <button class="btn outline" id="addPollOpt">+ Option</button>
+        <button class="btn" id="createPoll">Create Poll</button>
+      </div>
+    </div>
+    <div id="pollList"></div>
+  </section>
+
+  <section id="dice" class="panel">
+    <h2>Dice Roller</h2>
+    <div class="row">
+      <input type="text" id="sidesInput" value="6" placeholder="Sides">
+      <button class="btn" id="rollBtn">Roll</button>
+    </div>
+    <div id="diceResult">-</div>
+  </section>
+
+  <section id="account" class="panel">
+    <h2>Account</h2>
+    <div class="accCard">
+      <div id="noAcc">
+        <p class="muted">Pick a display name. It's remembered on this device/browser and shown in Chat.</p>
+        <div class="row">
+          <input type="text" id="acctName" placeholder="Display name..." maxlength="20">
+          <button class="btn" id="acctSave">Save</button>
+        </div>
+        <div class="row"><button class="btn outline" id="googleBtn" style="width:100%;">Continue with Google</button></div>
+        <p class="muted" id="googleNote" style="display:none;"></p>
+      </div>
+      <div id="hasAcc" class="hidden">
+        <p>Signed in as <b id="acctNameShown"></b></p>
+        <div class="row">
+          <button class="btn outline" id="acctChange">Change Name</button>
+          <button class="btn outline" id="acctLogout">Log Out</button>
+        </div>
+      </div>
+    </div>
+    <p class="muted" style="margin-top:14px;">This is a lightweight per-device profile, not a secured password login — see the Privacy tab for details.</p>
+  </section>
+
+  <section id="privacy" class="panel legal">
+    <h2>Privacy Policy</h2>
+    <p class="muted">Last updated: <span id="policyDate"></span>. This is a community-run friend-group site, not a registered business, and this policy is written for transparency — it is not formal legal advice, and it hasn't been reviewed by a lawyer.</p>
+
+    <h3>What we collect</h3>
+    <ul>
+      <li>Display name / username you choose in Account.</li>
+      <li>A random device identifier stored in your browser (localStorage), used only to remember your name and poll votes on that device.</li>
+      <li>Messages you post in Chat, options you add to the Wheel, and polls/votes you create.</li>
+      <li>Your color-theme choice (CCG or Smudge Society).</li>
+    </ul>
+
+    <h3>What we don't collect</h3>
+    <ul>
+      <li>No passwords — this site has no password-based login, so none are requested or stored.</li>
+      <li>No email addresses, phone numbers, or payment information.</li>
+      <li>No tracking cookies or third-party analytics/advertising scripts.</li>
+    </ul>
+
+    <h3>How it's stored and who can see it</h3>
+    <p>Chat messages, wheel options, and polls are stored in shared cloud storage tied to this page and are visible to anyone you share this page's link with — treat it like a group chat, not a private diary. Your display name and device identifier stay on your own device except when your name is shown next to something you post.</p>
+
+    <h3>Retention & deletion</h3>
+    <p>Content persists until manually removed (e.g. deleting a wheel option). You can clear your local profile anytime from the Account tab; this removes your saved name from your device but does not retroactively delete past messages.</p>
+
+    <h3>Children's privacy</h3>
+    <p>This site is intended for the friend group that was given the link and is not directed at children under 13.</p>
+
+    <h3>Changes</h3>
+    <p>This policy may be updated as the site changes. Continued use after an update means you accept the current version.</p>
+
+    <h3>Contact</h3>
+    <p>Questions about your data on this site should go directly to whoever shared the link with you (the site's owner/admin).</p>
+  </section>
+
+</main>
+
+<script>
+document.getElementById('policyDate').textContent = new Date().toLocaleDateString();
+
+// ---------- Google Sign-In (foundation — see README once self-hosted) ----------
+// 1. Create an OAuth Client ID at https://console.cloud.google.com/apis/credentials
+//    (type: Web application) and add your live domain under Authorized JavaScript origins.
+// 2. Paste that Client ID below. Leave blank to keep the manual name field only.
+const CONFIG = { GOOGLE_CLIENT_ID: "" };
+
+function initGoogleButton(){
+  const btn=document.getElementById('googleBtn');
+  const note=document.getElementById('googleNote');
+  if(!CONFIG.GOOGLE_CLIENT_ID){
+    btn.addEventListener('click',()=>{
+      note.style.display='block';
+      note.textContent='Google Sign-In isn\'t configured yet — add a Client ID once this site is on its own domain (see README).';
+    });
+    return;
+  }
+  const s=document.createElement('script');
+  s.src='https://accounts.google.com/gsi/client';
+  s.async=true;
+  s.onload=()=>{
+    google.accounts.id.initialize({ client_id: CONFIG.GOOGLE_CLIENT_ID, callback: handleGoogleCredential });
+  };
+  s.onerror=()=>{ note.style.display='block'; note.textContent='Could not load Google Sign-In (this preview may block it — it will work on your live domain).'; };
+  document.head.appendChild(s);
+  btn.addEventListener('click',()=>{ if(window.google) google.accounts.id.prompt(); });
+}
+function handleGoogleCredential(response){
+  try{
+    const payload=JSON.parse(atob(response.credential.split('.')[1]));
+    const name=payload.name || payload.email || 'Google User';
+    username=name;
+    localStorage.setItem('ccg_username',name);
+    if(db){ try{ db.doc('users/'+deviceId).set({username:name, provider:'google', updated:Date.now()}); }catch(e){} }
+    refreshAccountUI();
+  }catch(e){}
+}
+initGoogleButton();
+
+// ---------- panel switching with animation ----------
+function showPanel(id){
+  const cur = document.querySelector('.panel.active');
+  const next = document.getElementById(id);
+  if(cur===next) return;
+  if(cur){
+    cur.classList.remove('show');
+    setTimeout(()=>cur.classList.remove('active'),280);
+  }
+  next.classList.add('active');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>next.classList.add('show')));
+}
+document.querySelectorAll('nav button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('nav button').forEach(x=>x.classList.remove('navactive'));
+    b.classList.add('navactive');
+    showPanel(b.dataset.p);
+  });
+});
+document.querySelectorAll('.featCard').forEach(c=>{
+  c.addEventListener('click',()=>{
+    const target=c.dataset.goto;
+    const navBtn=document.querySelector('nav button[data-p="'+target+'"]');
+    if(navBtn) navBtn.click();
+  });
+});
+
+// ---------- theme switch ----------
+const THEMES = {
+  ccg:{title:'CCG Hub', home:"The group hub. Spin the wheel, vote in a poll, chat, or roll some dice.", btn:'Switch to Smudge'},
+  smudge:{title:'Smudge Society', home:"Welcome to the Smudge Society corner. Same tools, different vibe.", btn:'Switch to CCG'}
+};
+function applyTheme(t){
+  document.documentElement.setAttribute('data-theme', t);
+  document.getElementById('siteTitle').textContent = THEMES[t].title;
+  document.getElementById('siteTitleHome').textContent = THEMES[t].title;
+  document.getElementById('homeText').textContent = THEMES[t].home;
+  document.getElementById('themeBtn').textContent = THEMES[t].btn;
+  document.title = THEMES[t].title;
+}
+let currentTheme = localStorage.getItem('ccg_theme') || 'ccg';
+applyTheme(currentTheme);
+document.getElementById('themeBtn').onclick=()=>{
+  const overlay=document.getElementById('themeOverlay');
+  overlay.classList.add('active');
+  setTimeout(()=>{
+    currentTheme = currentTheme==='smudge' ? 'ccg' : 'smudge';
+    localStorage.setItem('ccg_theme',currentTheme);
+    applyTheme(currentTheme);
+  },320);
+  setTimeout(()=>overlay.classList.remove('active'),640);
+};
+
+// ---------- identity (device-based, no passwords) ----------
+function getDeviceId(){
+  let id = localStorage.getItem('ccg_device_id');
+  if(!id){
+    id = 'd_' + Date.now().toString(36) + Math.random().toString(36).slice(2,10);
+    localStorage.setItem('ccg_device_id', id);
+  }
+  return id;
+}
+const deviceId = getDeviceId();
+let username = localStorage.getItem('ccg_username') || '';
+
+function refreshAccountUI(){
+  const noAcc=document.getElementById('noAcc');
+  const hasAcc=document.getElementById('hasAcc');
+  if(username){
+    noAcc.classList.add('hidden'); hasAcc.classList.remove('hidden');
+    document.getElementById('acctNameShown').textContent=username;
+    document.getElementById('chatGate').classList.add('hidden');
+    document.getElementById('chatBox').classList.remove('hidden');
+    document.getElementById('whoAmI').textContent='Chatting as ' + username;
+  } else {
+    noAcc.classList.remove('hidden'); hasAcc.classList.add('hidden');
+    document.getElementById('chatGate').classList.remove('hidden');
+    document.getElementById('chatBox').classList.add('hidden');
+  }
+}
+document.getElementById('acctSave').onclick=()=>{
+  const v=document.getElementById('acctName').value.trim();
+  if(!v) return;
+  username=v;
+  localStorage.setItem('ccg_username',v);
+  if(db){ try{ db.doc('users/'+deviceId).set({username:v, updated:Date.now()}); }catch(e){} }
+  refreshAccountUI();
+};
+document.getElementById('acctChange').onclick=()=>{
+  document.getElementById('acctName').value=username;
+  username=''; refreshAccountUI();
+};
+document.getElementById('acctLogout').onclick=()=>{
+  username=''; localStorage.removeItem('ccg_username'); refreshAccountUI();
+};
+refreshAccountUI();
+
+// ---------- db capability ----------
+let db=null;
+(async()=>{
+  try{ db = await window.claude?.use?.('db'); }catch(e){ db=null; }
+  initWheel();
+  initChat();
+  initPolls();
+})();
+
+// ================= WHEEL =================
+let wheelOptions=["Pizza","Tacos","Sushi","Stay In"];
+async function initWheel(){
+  const svg=document.getElementById('wheelSvg');
+  const optList=document.getElementById('optList');
+  const optInput=document.getElementById('optInput');
+  function render(){
+    optList.innerHTML='';
+    wheelOptions.forEach((o,i)=>{
+      const li=document.createElement('li');
+      li.innerHTML=`<span>${escapeHtml(o)}</span>`;
+      const del=document.createElement('button'); del.textContent='✕'; del.onclick=()=>removeOption(i);
+      li.appendChild(del); optList.appendChild(li);
+    });
+    drawWheel();
+  }
+  function drawWheel(){
+    const n=wheelOptions.length||1, cx=150, cy=150, r=140, slice=360/n;
+    let html='';
+    for(let i=0;i<n;i++){
+      const a0=(i*slice-90)*Math.PI/180, a1=((i+1)*slice-90)*Math.PI/180;
+      const x0=cx+r*Math.cos(a0), y0=cy+r*Math.sin(a0), x1=cx+r*Math.cos(a1), y1=cy+r*Math.sin(a1);
+      const large=slice>180?1:0;
+      const fill=i%2===0?'var(--pos)':'var(--bg)';
+      html+=`<path d="M${cx},${cy} L${x0},${y0} A${r},${r} 0 ${large} 1 ${x1},${y1} Z" fill="${fill}" stroke="var(--line)" stroke-width="1"/>`;
+      const mid=(a0+a1)/2, tx=cx+(r*0.62)*Math.cos(mid), ty=cy+(r*0.62)*Math.sin(mid);
+      const tc=i%2===0?'var(--bg)':'var(--fg)';
+      html+=`<text x="${tx}" y="${ty}" fill="${tc}" font-size="11" font-weight="700" text-anchor="middle" transform="rotate(${(mid*180/Math.PI)+90} ${tx} ${ty})">${escapeXml(truncate(wheelOptions[i],12))}</text>`;
+    }
+    html+=`<circle cx="${cx}" cy="${cy}" r="6" fill="var(--pos)"/>`;
+    svg.innerHTML=html;
+  }
+  async function saveOptions(){ if(db){ try{ await db.doc('wheel/options').set({items:wheelOptions}); }catch(e){} } render(); }
+  async function addOption(){ const v=optInput.value.trim(); if(!v) return; wheelOptions.push(v); optInput.value=''; await saveOptions(); }
+  async function removeOption(i){ wheelOptions.splice(i,1); await saveOptions(); }
+  document.getElementById('addOpt').onclick=addOption;
+  optInput.addEventListener('keydown',e=>{ if(e.key==='Enter') addOption(); });
+  document.getElementById('spinBtn').onclick=()=>{
+    if(wheelOptions.length<2){ document.getElementById('result').textContent='Add at least 2 options'; return; }
+    const n=wheelOptions.length, idx=Math.floor(Math.random()*n), slice=360/n, targetMid=idx*slice+slice/2;
+    svg.style.transform=`rotate(${5*360+(360-targetMid)}deg)`;
+    document.getElementById('result').textContent='';
+    setTimeout(()=>{ document.getElementById('result').textContent=wheelOptions[idx]; },4100);
+  };
+  if(db){ try{ db.doc('wheel/options').onSnapshot(s=>{ const d=s&&s.exists?s.data():null; if(d&&Array.isArray(d.items)&&d.items.length) wheelOptions=d.items; render(); }); }catch(e){ render(); } }
+  else render();
+}
+
+// ================= CHAT =================
+function initChat(){
+  const chatLog=document.getElementById('chatLog');
+  const msgInput=document.getElementById('msgInput');
+  if(db){
+    try{
+      db.collection('messages').orderBy('ts').limit(100).onSnapshot(snap=>{
+        chatLog.innerHTML='';
+        (snap && snap.docs ? snap.docs : []).forEach(docSnap=>{
+          const m=docSnap.data()||{};
+          const div=document.createElement('div'); div.className='msg';
+          const time=m.ts?new Date(m.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'';
+          div.innerHTML=`<b>${escapeHtml(m.user||'?')}</b><span class="t">${time}</span><br>${escapeHtml(m.text||'')}`;
+          chatLog.appendChild(div);
+        });
+        chatLog.scrollTop=chatLog.scrollHeight;
+      }, err=>{ chatLog.innerHTML='<div class="msg muted">Chat storage unavailable right now.</div>'; });
+    }catch(e){ chatLog.innerHTML='<div class="msg muted">Chat storage unavailable right now.</div>'; }
+  } else { chatLog.innerHTML='<div class="msg muted">Chat storage unavailable right now.</div>'; }
+  async function send(){
+    const v=msgInput.value.trim();
+    if(!v||!db||!username) return;
+    msgInput.value='';
+    try{ const id='m_'+Date.now()+'_'+Math.random().toString(36).slice(2,7); await db.doc('messages/'+id).set({user:username,text:v,ts:Date.now()}); }catch(e){}
+  }
+  document.getElementById('sendMsg').onclick=send;
+  msgInput.addEventListener('keydown',e=>{ if(e.key==='Enter') send(); });
+}
+
+// ================= POLLS =================
+function initPolls(){
+  const list=document.getElementById('pollList');
+  const optsWrap=document.getElementById('pollOptsInputs');
+  document.getElementById('addPollOpt').onclick=()=>{
+    if(optsWrap.children.length>=6) return;
+    const row=document.createElement('div'); row.className='row';
+    row.innerHTML=`<input type="text" class="pollOptInput" placeholder="Option ${optsWrap.children.length+1}">`;
+    optsWrap.appendChild(row);
+  };
+  document.getElementById('createPoll').onclick=async()=>{
+    const q=document.getElementById('pollQ').value.trim();
+    const opts=[...document.querySelectorAll('.pollOptInput')].map(i=>i.value.trim()).filter(Boolean);
+    if(!q||opts.length<2||!db) return;
+    const id='p_'+Date.now()+'_'+Math.random().toString(36).slice(2,7);
+    try{
+      await db.doc('polls/'+id).set({question:q, options:opts, votes:opts.map(()=>0), voters:[], ts:Date.now()});
+      document.getElementById('pollQ').value='';
+      optsWrap.innerHTML='<div class="row"><input type="text" class="pollOptInput" placeholder="Option 1"></div><div class="row"><input type="text" class="pollOptInput" placeholder="Option 2"></div>';
+    }catch(e){}
+  };
+  if(db){
+    try{
+      db.collection('polls').orderBy('ts').onSnapshot(snap=>{
+        list.innerHTML='';
+        (snap && snap.docs ? snap.docs : []).slice().reverse().forEach(docSnap=>{
+          const p=Object.assign({id:docSnap.id}, docSnap.data()||{});
+          renderPoll(p,list);
+        });
+      }, err=>{ list.innerHTML='<p class="muted">Polls unavailable right now.</p>'; });
+    }catch(e){ list.innerHTML='<p class="muted">Polls unavailable right now.</p>'; }
+  } else { list.innerHTML='<p class="muted">Polls unavailable right now.</p>'; }
+}
+function renderPoll(p,list){
+  const total=(p.votes||[]).reduce((a,b)=>a+b,0);
+  const voters=p.voters||[];
+  const iVoted=voters.includes(deviceId);
+  const card=document.createElement('div'); card.className='pollCard';
+  let inner=`<div class="pollQ">${escapeHtml(p.question)}</div>`;
+  (p.options||[]).forEach((o,i)=>{
+    const votes=(p.votes||[])[i]||0;
+    const pct=total?Math.round(votes/total*100):0;
+    if(iVoted){
+      inner+=`<div class="pollOpt"><div class="barWrap"><div class="barFill" style="width:${pct}%"></div><span class="barLabel">${escapeHtml(o)} — ${pct}% (${votes})</span></div></div>`;
+    } else {
+      inner+=`<div class="pollOpt"><button data-idx="${i}">${escapeHtml(o)}</button></div>`;
+    }
+  });
+  inner+=`<div class="pollMeta">${total} vote${total===1?'':'s'}${iVoted?' · you voted':''}</div>`;
+  card.innerHTML=inner;
+  if(!iVoted){
+    card.querySelectorAll('button[data-idx]').forEach(btn=>{
+      btn.onclick=async()=>{
+        if(!db) return;
+        const idx=parseInt(btn.dataset.idx);
+        const newVotes=(p.votes||[]).slice(); newVotes[idx]=(newVotes[idx]||0)+1;
+        const newVoters=(p.voters||[]).concat([deviceId]);
+        try{ await db.doc('polls/'+p.id).set({...p, votes:newVotes, voters:newVoters}); }catch(e){}
+      };
+    });
+  }
+  list.appendChild(card);
+}
+
+// ================= DICE =================
+document.getElementById('rollBtn').onclick=()=>{
+  const sides=Math.max(2,parseInt(document.getElementById('sidesInput').value)||6);
+  document.getElementById('diceResult').textContent=Math.floor(Math.random()*sides)+1;
+};
+
+// ---------- helpers ----------
+function escapeHtml(s){ return (s+'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function escapeXml(s){ return escapeHtml(s); }
+function truncate(s,n){ return s.length>n?s.slice(0,n-1)+'…':s; }
+</script>
+</body>
+</html>
