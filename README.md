@@ -1,4 +1,4 @@
-# Hub — Going Live
+# Basecamperr — Going Live
 
 This is the full path from "files on my computer" to "a real domain, with a
 real backend, that all your friends can use." Every tool below has a free
@@ -7,23 +7,23 @@ the domain itself** (about $9–10/year).
 
 Stack used (all free at this scale):
 - **Firebase Hosting** — serves the site, free SSL, free CDN
-- **Firebase Firestore** — the database behind Communities/Wheel/Polls
+- **Firebase Firestore** — the database behind Basecamps/Wheel/Polls
 - **Firebase Authentication** — anonymous IDs for Wheel/Polls, "Continue
-  with Google" + a claimed username for Communities
+  with Google" + a claimed username for Basecamps
 - **Cloudflare Registrar** — sells domains at cost, no markup (cheapest
   place to buy one)
 
 `index.html` in this folder is already wired up to call Firebase — you're
 just filling in the blanks and deploying it.
 
-## How Communities work
+## How Basecamps work
 - Signing in with Google and claiming a username unlocks the
-  **Communities** tab.
-- Creating a community makes you its **admin**. Only the admin can add
+  **Basecamps** tab.
+- Creating a basecamp makes you its **admin**. Only the admin can add
   members (by username) or create rooms.
 - Each room the admin creates gets a random **3-letter code**; any
   existing member can jump straight into a room by entering that code
-  under Communities → Join.
+  under Basecamps → Join.
 - The admin, or whoever created a specific room, can delete that room
   (this also deletes its messages).
 
@@ -45,7 +45,7 @@ firebase serve
 
 then open the `http://localhost:5000` link it prints. (No Firebase
 project yet? `python3 -m http.server 8000` from this folder and open
-`http://localhost:8000` works too, though Communities/Chat/Polls need
+`http://localhost:8000` works too, though Basecamps/Chat/Polls need
 real Firebase to do anything.)
 
 ## Part 1 — Create the Firebase project (free)
@@ -65,7 +65,7 @@ real Firebase to do anything.)
 
 ## Part 2 — Set Firestore's security rules
 
-Communities are admin-gated now, so the rules are more specific than a
+Basecamps are admin-gated now, so the rules are more specific than a
 single blanket rule. In Firestore, click the **Rules** tab and replace
 the contents with:
 ```
@@ -131,9 +131,9 @@ service cloud.firestore {
   }
 }
 ```
-Click **Publish**. In plain terms: only a community's owner can add
+Click **Publish**. In plain terms: only a basecamp's owner can add
 members, create rooms, or delete anyone's messages; only members can
-read/post in a room; a room's creator (or the community owner) can
+read/post in a room; a room's creator (or the basecamp owner) can
 delete that room.
 
 ## Part 3 — Get your config and paste it in
@@ -187,7 +187,7 @@ firebase deploy --only hosting
 
 It prints a URL like `https://ccg-hub.web.app` — open it. The site is
 now live on the internet, with a real database, for free. This is a
-good moment to test Communities/Wheel/Polls with a friend before buying
+good moment to test Basecamps/Wheel/Polls with a friend before buying
 a domain.
 
 ## Part 5 — Buy the cheapest domain

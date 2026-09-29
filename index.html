@@ -3,13 +3,33 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Hub</title>
+<title>Basecamperr</title>
 <style>
 :root{
   --bg:#160f0a; --bg2:#0e0a06; --fg:#f1e3cf; --line:#4a3623; --muted:#b89a72;
   --card:#211609; --card2:#2a1c0e; --pos:#e08a3c; --pos-fg:#1c1006; --ember:#c1461e;
   --glow: 0 0 24px rgba(224,138,60,.12);
   box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+:root[data-theme="midnight"]{
+  --bg:#0a0e1a; --bg2:#05070e; --fg:#dfe8f8; --line:#2a3b5c; --muted:#8496b8;
+  --card:#111a2e; --card2:#16223c; --pos:#4f9dde; --pos-fg:#04101c; --ember:#3d6fae;
+  --glow: 0 0 24px rgba(79,157,222,.16);
+}
+:root[data-theme="forest"]{
+  --bg:#0e1710; --bg2:#0a110c; --fg:#e3ead9; --line:#33492f; --muted:#8fa583;
+  --card:#16221a; --card2:#1c2b20; --pos:#6fae4f; --pos-fg:#0b140c; --ember:#4a7d3a;
+  --glow: 0 0 24px rgba(111,174,79,.16);
+}
+:root[data-theme="slate"]{
+  --bg:#121212; --bg2:#0a0a0a; --fg:#eeeeee; --line:#3a3a3a; --muted:#9a9a9a;
+  --card:#1c1c1c; --card2:#232323; --pos:#e5e5e5; --pos-fg:#111111; --ember:#9a9a9a;
+  --glow: 0 0 24px rgba(255,255,255,.08);
+}
+:root[data-theme="rose"]{
+  --bg:#160a0d; --bg2:#0e0608; --fg:#f6e3e6; --line:#5a2c34; --muted:#c08a94;
+  --card:#211015; --card2:#2b151b; --pos:#e0567e; --pos-fg:#1c0810; --ember:#a83352;
+  --glow: 0 0 24px rgba(224,86,126,.16);
 }
 *{box-sizing:border-box;}
 html,body{height:100%;}
@@ -35,6 +55,8 @@ nav button.navactive{background:var(--pos);color:var(--pos-fg);border-color:var(
 .dropdownMenu button{display:block;width:100%;padding:12px 16px;background:none;border:none;border-bottom:1px solid var(--line);color:var(--fg);text-align:left;letter-spacing:.3px;font-size:.9rem;cursor:pointer;font-family:inherit;}
 .dropdownMenu button:last-child{border-bottom:none;}
 .dropdownMenu button:hover{background:var(--pos);color:var(--pos-fg);}
+.themeOpt{display:flex !important;align-items:center;gap:10px;}
+.swatch{display:inline-block;width:14px;height:14px;border-radius:50%;border:1px solid rgba(255,255,255,.3);flex-shrink:0;}
 main{max-width:640px;margin:0 auto;padding:26px 20px 60px;position:relative;}
 .panel{display:none;opacity:0;transform:translateY(10px);transition:opacity .3s ease,transform .3s ease;}
 .panel.active{display:block;}
@@ -109,13 +131,13 @@ ul.optlist li button{background:none;border:none;color:var(--muted);cursor:point
 </head>
 <body>
 <header>
-  <h1 id="siteTitle">Hub</h1>
-  <p class="siteSubtitle">Private spaces for the people you trust.</p>
+  <h1 id="siteTitle">Basecamperr</h1>
 </header>
 <nav>
   <button data-p="home" class="navactive">Home</button>
-  <button data-p="communities">Communities</button>
+  <button data-p="communities">Basecamps</button>
   <button id="toolsNavBtn" type="button">Tools ▾</button>
+  <button id="themeNavBtn" type="button">Theme ▾</button>
   <button data-p="account">Account</button>
   <button data-p="privacy">Privacy</button>
 </nav>
@@ -124,26 +146,31 @@ ul.optlist li button{background:none;border:none;color:var(--muted);cursor:point
   <button data-p="polls">Polls</button>
   <button data-p="dice">Dice</button>
 </div>
+<div class="dropdownMenu" id="themeDropdown">
+  <button class="themeOpt" data-theme="campfire"><span class="swatch" style="background:#e08a3c;"></span>Campfire</button>
+  <button class="themeOpt" data-theme="midnight"><span class="swatch" style="background:#4f9dde;"></span>Midnight</button>
+  <button class="themeOpt" data-theme="forest"><span class="swatch" style="background:#6fae4f;"></span>Forest</button>
+  <button class="themeOpt" data-theme="rose"><span class="swatch" style="background:#e0567e;"></span>Rose</button>
+  <button class="themeOpt" data-theme="slate"><span class="swatch" style="background:#e5e5e5;"></span>Slate</button>
+</div>
 <main>
 
   <section id="home" class="panel active show">
     <div class="hero">
-      <span class="heroTag">Media Platform Made With Quality</span>
-      <h2 class="heroTitle" style="border:none;">Hub</h2>
-      <p class="heroSub">Create a private community, invite the people you choose, and organize your own chat rooms — plus a few small tools on the side.</p>
+      <h2 class="heroTitle" style="border:none;">Basecamperr</h2>
     </div>
     <div class="cardGrid">
-      <button class="featCard" data-goto="communities"><span>Communities</span></button>
+      <button class="featCard" data-goto="communities"><span>Basecamps</span></button>
       <button class="featCard" data-goto-tools="1"><span>Tools</span></button>
     </div>
-    <p class="muted" style="text-align:center;margin-top:22px;">Communities are invite-only — an admin has to add you.</p>
+    <p class="muted" style="text-align:center;margin-top:22px;">Basecamps are invite-only — an admin has to add you.</p>
   </section>
 
   <section id="communities" class="panel">
-    <h2>Communities</h2>
+    <h2>Basecamps</h2>
 
     <div id="commNeedAuth">
-      <p class="muted">Sign in with Google and choose a username in the Account tab to create or join communities.</p>
+      <p class="muted">Sign in with Google and choose a username in the Account tab to create or join basecamps.</p>
     </div>
 
     <div id="commViewList" class="hidden">
@@ -153,14 +180,14 @@ ul.optlist li button{background:none;border:none;color:var(--muted);cursor:point
       </div>
       <p class="muted" id="joinCodeNote"></p>
       <div class="row">
-        <input type="text" id="newCommName" placeholder="New community name..." maxlength="30">
+        <input type="text" id="newCommName" placeholder="New basecamp name..." maxlength="30">
         <button class="btn" id="newCommBtn">Create</button>
       </div>
       <div id="commList"></div>
     </div>
 
     <div id="commViewDetail" class="hidden">
-      <button class="backBtn" id="backToList">&larr; Your Communities</button>
+      <button class="backBtn" id="backToList">&larr; Your Basecamps</button>
       <h2 id="commDetailName" style="border:none;"></h2>
 
       <div id="ownerControls" class="hidden">
@@ -248,13 +275,13 @@ ul.optlist li button{background:none;border:none;color:var(--muted);cursor:point
   <section id="account" class="panel">
     <h2>Account</h2>
     <div class="accCard" id="acctSignedOut">
-      <p class="muted">Sign in with Google to create or join Communities and set a username.</p>
+      <p class="muted">Sign in with Google to create or join Basecamps and set a username.</p>
       <div class="row"><button class="btn" id="googleBtn" style="width:100%;">Continue with Google</button></div>
       <p class="muted" id="googleNote" style="display:none;"></p>
     </div>
     <div class="accCard hidden" id="acctNeedUsername">
       <p>Signed in as <b id="acctGoogleName"></b>.</p>
-      <p class="muted">Choose a username — this is what others will see and use to add you to a community.</p>
+      <p class="muted">Choose a username — this is what others will see and use to add you to a basecamp.</p>
       <div class="row">
         <input type="text" id="usernameInput" placeholder="username" maxlength="20">
         <button class="btn" id="claimUsernameBtn">Claim</button>
@@ -270,12 +297,12 @@ ul.optlist li button{background:none;border:none;color:var(--muted);cursor:point
 
   <section id="privacy" class="panel legal">
     <h2>Privacy Policy</h2>
-    <p class="muted">Last updated: <span id="policyDate"></span>. This is a community-run site, not a registered business, and this policy is written for transparency — it is not formal legal advice, and it hasn't been reviewed by a lawyer.</p>
+    <p class="muted">Last updated: <span id="policyDate"></span>. This is a basecamp-run site, not a registered business, and this policy is written for transparency — it is not formal legal advice, and it hasn't been reviewed by a lawyer.</p>
 
     <h3>What we collect</h3>
     <ul>
       <li>Your Google account name/email, used to sign in and shown next to the username you choose.</li>
-      <li>The username you choose, and which communities/rooms you're a member of.</li>
+      <li>The username you choose, and which basecamps/rooms you're a member of.</li>
       <li>Messages posted in rooms, wheel options, and poll votes.</li>
       <li>A random visitor identifier used to prevent double poll votes.</li>
     </ul>
@@ -288,10 +315,10 @@ ul.optlist li button{background:none;border:none;color:var(--muted);cursor:point
     </ul>
 
     <h3>How it's stored and who can see it</h3>
-    <p>Community and room content is visible only to that community's members and its admin. Wheel options and polls are visible to anyone who opens this page.</p>
+    <p>Basecamp and room content is visible only to that basecamp's members and its admin. Wheel options and polls are visible to anyone who opens this page.</p>
 
     <h3>Admin controls</h3>
-    <p>A community's creator (admin) chooses who is added, can create and delete rooms, and can see the member list. Room creators can delete rooms they created.</p>
+    <p>A basecamp's creator (admin) chooses who is added, can create and delete rooms, and can see the member list. Room creators can delete rooms they created.</p>
 
     <h3>Retention & deletion</h3>
     <p>Content persists until a room or option is manually deleted. Deleting a room removes its messages.</p>
@@ -393,6 +420,7 @@ document.querySelectorAll('nav button[data-p], #toolsDropdown button[data-p]').f
   b.addEventListener('click',()=>{
     document.querySelectorAll('nav button[data-p]').forEach(x=>x.classList.remove('navactive'));
     document.getElementById('toolsDropdown').classList.remove('open');
+    document.getElementById('themeDropdown').classList.remove('open');
     if(['wheel','polls','dice'].includes(b.dataset.p)){
       document.getElementById('toolsNavBtn').classList.add('navactive');
     } else {
@@ -401,24 +429,46 @@ document.querySelectorAll('nav button[data-p], #toolsDropdown button[data-p]').f
     showPanel(b.dataset.p);
   });
 });
-function positionToolsDropdown(){
-  const btn=document.getElementById('toolsNavBtn');
-  const menu=document.getElementById('toolsDropdown');
+function positionDropdown(btn, menu){
   const r=btn.getBoundingClientRect();
   menu.style.top = r.bottom+'px';
   menu.style.minWidth = Math.max(r.width,140)+'px';
   menu.style.right = Math.max(8, window.innerWidth - r.right)+'px';
   menu.style.left = 'auto';
 }
-document.getElementById('toolsNavBtn').addEventListener('click',(e)=>{
-  e.stopPropagation();
-  const menu=document.getElementById('toolsDropdown');
-  if(!menu.classList.contains('open')){ positionToolsDropdown(); }
-  menu.classList.toggle('open');
+function wireDropdown(btnId, menuId){
+  const btn=document.getElementById(btnId);
+  const menu=document.getElementById(menuId);
+  btn.addEventListener('click',(e)=>{
+    e.stopPropagation();
+    const wasOpen=menu.classList.contains('open');
+    closeAllDropdowns();
+    if(!wasOpen){ positionDropdown(btn, menu); menu.classList.add('open'); }
+  });
+}
+function closeAllDropdowns(){
+  document.querySelectorAll('.dropdownMenu.open').forEach(m=>m.classList.remove('open'));
+}
+wireDropdown('toolsNavBtn','toolsDropdown');
+wireDropdown('themeNavBtn','themeDropdown');
+document.addEventListener('click', closeAllDropdowns);
+window.addEventListener('scroll', closeAllDropdowns, {passive:true});
+window.addEventListener('resize', closeAllDropdowns);
+
+// ---------- color scheme picker ----------
+const THEME_NAMES={campfire:'Campfire',midnight:'Midnight',forest:'Forest',rose:'Rose',slate:'Slate'};
+function applyTheme(id){
+  if(id==='campfire'){ document.documentElement.removeAttribute('data-theme'); }
+  else{ document.documentElement.setAttribute('data-theme', id); }
+  localStorage.setItem('color_theme', id);
+}
+applyTheme(localStorage.getItem('color_theme') || 'campfire');
+document.querySelectorAll('.themeOpt').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    applyTheme(btn.dataset.theme);
+    document.getElementById('themeDropdown').classList.remove('open');
+  });
 });
-document.addEventListener('click',()=>document.getElementById('toolsDropdown').classList.remove('open'));
-window.addEventListener('scroll',()=>document.getElementById('toolsDropdown').classList.remove('open'), {passive:true});
-window.addEventListener('resize',()=>document.getElementById('toolsDropdown').classList.remove('open'));
 document.querySelectorAll('.featCard[data-goto]').forEach(c=>{
   c.addEventListener('click',()=>{
     const navBtn=document.querySelector('nav button[data-p="'+c.dataset.goto+'"]');
@@ -671,7 +721,7 @@ document.getElementById('rollBtn').onclick=()=>{
   },70);
 };
 
-// ================= COMMUNITIES =================
+// ================= BASECAMPS =================
 function threeLetterCode(){
   const L='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   return L[Math.floor(Math.random()*26)]+L[Math.floor(Math.random()*26)]+L[Math.floor(Math.random()*26)];
@@ -690,11 +740,11 @@ function subscribeMyMemberships(){
     (snap.docs||[]).forEach(d=>{
       const m=d.data();
       const item=document.createElement('div'); item.className='commItem';
-      item.innerHTML=`<span>${escapeHtml(m.name||'Community')}</span><span class="muted">${m.role==='owner'?'admin':'member'}</span>`;
+      item.innerHTML=`<span>${escapeHtml(m.name||'Basecamp')}</span><span class="muted">${m.role==='owner'?'admin':'member'}</span>`;
       item.onclick=()=>openCommunity(d.id);
       list.appendChild(item);
     });
-    if(!(snap.docs||[]).length){ list.innerHTML='<p class="muted">No communities yet — create one above.</p>'; }
+    if(!(snap.docs||[]).length){ list.innerHTML='<p class="muted">No basecamps yet — create one above.</p>'; }
   }, ()=>{});
 }
 
@@ -723,7 +773,7 @@ function initCommunities(){
       if(!codeDoc.exists){ note.textContent='No room found with that code.'; return; }
       const { communityId, roomId } = codeDoc.data();
       const memberDoc = await db.doc('communities/'+communityId+'/members/'+myUid).get();
-      if(!memberDoc.exists){ note.textContent="You're not a member of that community — ask the admin to add you first."; return; }
+      if(!memberDoc.exists){ note.textContent="You're not a member of that basecamp — ask the admin to add you first."; return; }
       openCommunity(communityId, ()=>openRoom(communityId, roomId));
     }catch(e){ note.textContent='Could not look up that code.'; }
   };
@@ -753,7 +803,7 @@ function initCommunities(){
       const uid = uDoc.data().uid;
       await db.doc('communities/'+currentCommunityId+'/members/'+uid).set({ username:uname, addedAt:Date.now(), role:'member' });
       const cSnap = await db.doc('communities/'+currentCommunityId).get();
-      await db.doc('users/'+uid+'/memberships/'+currentCommunityId).set({ name:(cSnap.data()||{}).name||'Community', role:'member', ts:Date.now() });
+      await db.doc('users/'+uid+'/memberships/'+currentCommunityId).set({ name:(cSnap.data()||{}).name||'Basecamp', role:'member', ts:Date.now() });
       document.getElementById('addMemberInput').value='';
       note.textContent='Added.';
     }catch(e){ note.textContent='Could not add that user (check the security rules if this keeps happening).'; }
@@ -801,7 +851,7 @@ async function openCommunity(cid, then){
   const cDoc = await db.doc('communities/'+cid).get();
   const cData = cDoc.data()||{};
   currentCommunityOwner = cData.ownerId;
-  document.getElementById('commDetailName').textContent = cData.name||'Community';
+  document.getElementById('commDetailName').textContent = cData.name||'Basecamp';
   document.getElementById('ownerControls').classList.toggle('hidden', currentCommunityOwner!==myUid);
 
   roomListUnsub = db.collection('communities/'+cid+'/rooms').orderBy('createdAt').onSnapshot(snap=>{
