@@ -136,25 +136,38 @@ members, create rooms, or delete anyone's messages; only members can
 read/post in a room; a room's creator (or the basecamp owner) can
 delete that room.
 
-## Part 3 — Get your config and paste it in
+## Part 3 — Register a Web app (no pasting needed)
+
+`index.html` loads the project's Firebase config automatically from
+`/__/firebase/init.json`, a URL Firebase Hosting serves on your live site,
+your custom domain, and `firebase serve`. For that file to contain your
+keys, the project needs a registered Web app:
 
 1. In Firebase, click the **gear icon → Project settings**.
-2. Scroll to **Your apps** → click the **</>** (web) icon → nickname it
-   (e.g. `web`) → **Register app**. Don't add the hosting SDK yet.
-3. It shows a `firebaseConfig` object. Copy it.
-4. Open `index.html` in this folder, find this block near the top of the
-   `<script type="module">` tag, and paste your values in:
-   ```js
-   const firebaseConfig = {
-     apiKey: "...",
-     authDomain: "...",
-     projectId: "...",
-     storageBucket: "...",
-     messagingSenderId: "...",
-     appId: "..."
-   };
-   ```
-5. Save the file.
+2. Scroll to **Your apps**. If there's no web app (`</>`) listed, click
+   the **</>** icon → nickname it (e.g. `web`) → **Register app**.
+3. That's it — no need to copy the `firebaseConfig` into `index.html`.
+   (Only if you ever host the site somewhere *other* than Firebase
+   Hosting: paste `apiKey`, `appId`, etc. into the `firebaseConfig` block
+   near the top of the `<script type="module">` tag.)
+
+### If "Continue with Google" doesn't work
+
+The Account tab now shows the exact reason under the button. The usual
+fixes, all in Firebase Console:
+
+- **"isn't allowed on <your domain>"** → **Authentication → Settings →
+  Authorized domains → Add domain**, and add your custom domain (e.g.
+  `ccghub.com`). `*.web.app` / `*.firebaseapp.com` are there by default.
+- **"Google sign-in is turned off"** → **Authentication → Sign-in
+  method → Google → Enable**, pick a support email, **Save**.
+- **"Firebase Authentication hasn't been set up"** → **Authentication →
+  Get started**.
+- **"Couldn't find this site's Firebase config"** → you're not on the
+  deployed site (or `firebase serve`), or no Web app is registered
+  (step 2 above).
+- Also enable **Anonymous** under Sign-in method — Wheel/Polls use it
+  for visitors who haven't signed in.
 
 ## Part 4 — Install the Firebase CLI and deploy
 
